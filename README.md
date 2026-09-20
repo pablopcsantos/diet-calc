@@ -1,6 +1,6 @@
 # DietCalc - Plano Alimentar para Iniciantes na Musculação 🏋️‍♂️🥗
 
-Um WebApp simples, responsivo e que funciona **100% offline**, desenvolvido para calcular porções alimentares com base no peso de indivíduos saudáveis que estão iniciando na musculação. 
+Um WebApp simples, responsivo e que funciona **100% offline**, desenvolvido para calcular porções alimentares com base no peso de indivíduos saudáveis que estão iniciando no universo da musculação. 
 
 ## 🌐 Demonstração Online (Preview)
 Você pode testar a ferramenta diretamente no seu navegador, sem precisar instalar nada, acessando o link do GitHub Pages:
