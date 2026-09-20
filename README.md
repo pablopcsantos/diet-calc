@@ -4,7 +4,7 @@ Um WebApp simples, responsivo e que funciona **100% offline**, desenvolvido para
 
 ## 🌐 Demonstração Online (Preview)
 Você pode testar a ferramenta diretamente no seu navegador, sem precisar instalar nada, acessando o link do GitHub Pages:
-**[👉 Clique aqui para acessar o WebApp](https://SEU_USUARIO.github.io/SEU_REPOSITORIO/)** *(Nota: altere este link com as informações do seu repositório após ativar o GitHub Pages nas configurações)*.
+**[👉 Clique aqui para acessar o WebApp](https://pablopcsantos.github.io/diet-calc/)** *(Nota: altere este link com as informações do seu repositório após ativar o GitHub Pages nas configurações)*.
 
 ## ⚡ Funcionalidades
 - **Cálculo Dinâmico:** As gramaturas dos alimentos (carboidratos e proteínas) são ajustadas automaticamente ao inserir o peso do indivíduo.
