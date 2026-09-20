@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano Alimentar - Musculação</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #27ae60;
+            --bg: #f5f6fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 { color: var(--primary); }
+        .calculator {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #219653; }
+        .recipe-card {
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+        }
+        .explanations {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px dashed #ccc;
+        }
+        .export-btn {
+            background-color: var(--primary);
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        /* Regras para exportação do PDF offline */
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; }
+            .calculator, .export-btn { display: none; }
+            .recipe-card { break-inside: avoid; border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Gerador de Plano Alimentar</h1>
+    <p>Calcule suas porções diárias com base no seu peso corporal atual. Recomendado para iniciantes em musculação sem comorbidades.</p>
+
+    <div class="calculator">
+        <label for="weight"><strong>Seu Peso (kg):</strong></label>
+        <input type="number" id="weight" value="70" min="40" max="150">
+        <button onclick="calculateDiet()">Calcular Porções</button>
+    </div>
+
+    <div id="diet-plan">
+        <h2>Refeições Diárias (5 refeições/dia)</h2>
+        
+        <div class="recipe-card">
+            <h3>Refeição 1: Café da Manhã - Panqueca Proteica de Aveia</h3>
+            <p><strong>Ingredientes:</strong></p>
+            <ul>
+                <li><span id="r1-ovos">2</span> ovos inteiros</li>
+                <li><span id="r1-aveia">50</span>g de aveia em flocos</li>
+                <li>1 banana amassada</li>
+                <li>Canela a gosto</li>
+            </ul>
+            <p><em>Preparo:</em> Misture tudo e asse em frigideira antiaderente. Fornece energia de liberação lenta e proteínas de alto valor biológico para quebrar o jejum.</p>
+        </div>
+
+        <div class="recipe-card">
+            <h3>Refeição 2: Almoço - Frango com Batata Doce</h3>
+            <p><strong>Ingredientes:</strong></p>
+            <ul>
+                <li><span id="r2-frango">175</span>g de peito de frango grelhado</li>
+                <li><span id="r2-batata">210</span>g de batata doce cozida ou assada</li>
+                <li>Salada de folhas verdes à vontade (foco em micronutrientes)</li>
+                <li>1 colher de sopa de azeite de oliva</li>
+            </ul>
+            <p><em>Preparo:</em> Grelhe o frango com temperos naturais. Refeição densa em carboidratos complexos para repor ou preparar os estoques de glicogênio.</p>
+        </div>
+
+        <div class="recipe-card">
+            <h3>Refeição 3: Pré-Treino - Shake Rápido</h3>
+            <p><strong>Ingredientes:</strong></p>
+            <ul>
+                <li><span id="r3-whey">28</span>g de Whey Protein Concentrado</li>
+                <li><span id="r3-leite">280</span>ml de leite desnatado</li>
+                <li><span id="r3-banana">1</span> banana média</li>
+            </ul>
+            <p><em>Preparo:</em> Bata tudo no liquidificador. Alta digestibilidade, ideal para ser consumido 60-90 minutos antes do treino sem causar desconforto gástrico.</p>
+        </div>
+
+        <div class="recipe-card">
+            <h3>Refeição 4: Jantar/Pós-Treino - Patinho com Arroz</h3>
+            <p><strong>Ingredientes:</strong></p>
+            <ul>
+                <li><span id="r4-patinho">140</span>g de carne moída (patinho)</li>
+                <li><span id="r4-arroz">175</span>g de arroz branco cozido</li>
+                <li>Vegetais cozidos (brócolis, cenoura)</li>
+            </ul>
+            <p><em>Preparo:</em> Refogue a carne com alho e cebola. O arroz branco no pós-treino eleva a insulina rapidamente, auxiliando na absorção de nutrientes pelas células musculares.</p>
+        </div>
+
+        <div class="recipe-card">
+            <h3>Refeição 5: Ceia - Creme de Iogurte com Amendoim</h3>
+            <p><strong>Ingredientes:</strong></p>
+            <ul>
+                <li><span id="r5-iogurte">175</span>g de iogurte natural desnatado</li>
+                <li><span id="r5-pasta">14</span>g de pasta de amendoim integral</li>
+                <li>Adoçante a gosto (opcional)</li>
+            </ul>
+            <p><em>Preparo:</em> Misture a pasta no iogurte. Combinação de caseína (proteína de lenta absorção) e gorduras boas, excelente para manter a nutrição muscular durante o sono.</p>
+        </div>
+    </div>
+
+    <div class="explanations">
+        <h2>Por que 5 refeições e por que estes alimentos?</h2>
+        <p><strong>O Fracionamento (5 refeições):</strong> Para indivíduos saudáveis iniciando na musculação, fracionar as refeições em 5 momentos ao dia garante um fluxo constante de aminoácidos no sangue (síntese proteica) e facilita a ingestão do volume total de calorias sem causar distensão abdominal severa.</p>
+        
+        <p><strong>As Fontes de Proteína (Ovos, Frango, Patinho, Whey, Iogurte):</strong> Fornecem todos os aminoácidos essenciais necessários para a reparação das microlesões musculares causadas pelo treinamento com pesos.</p>
+        
+        <p><strong>Os Carboidratos (Aveia, Batata Doce, Arroz, Banana):</strong> O carboidrato é o principal combustível do treino de musculação. A ausência dele faz o corpo degradar massa muscular para gerar energia. Usamos fontes de rápida absorção perto do treino (arroz, banana) e lenta absorção em horários distantes (aveia, batata doce).</p>
+        
+        <p><strong>A Ceia com Gorduras Boas:</strong> A pasta de amendoim atrasa a digestão da refeição. Consumi-la antes de dormir ajuda a evitar o catabolismo (perda de massa muscular) durante as 7 a 8 horas de jejum do sono.</p>
+    </div>
+
+    <button class="export-btn" onclick="window.print()">Exportar Plano como PDF</button>
+</div>
+
+<script>
+    function calculateDiet() {
+        const weight = document.getElementById('weight').value;
+        if(weight <= 0) return alert("Insira um peso válido.");
+
+        // Refeição 1
+        document.getElementById('r1-ovos').innerText = Math.round(weight * 0.03); // ~2 ovos para 70kg
+        document.getElementById('r1-aveia').innerText = Math.round(weight * 0.71); // ~50g para 70kg
+
+        // Refeição 2
+        document.getElementById('r2-frango').innerText = Math.round(weight * 2.5); // 175g para 70kg
+        document.getElementById('r2-batata').innerText = Math.round(weight * 3.0); // 210g para 70kg
+
+        // Refeição 3
+        document.getElementById('r3-whey').innerText = Math.round(weight * 0.4); // 28g para 70kg
+        document.getElementById('r3-leite').innerText = Math.round(weight * 4.0); // 280ml para 70kg
+        document.getElementById('r3-banana').innerText = Math.round(weight * 0.015) || 1; // 1 banana
+
+        // Refeição 4
+        document.getElementById('r4-patinho').innerText = Math.round(weight * 2.0); // 140g para 70kg
+        document.getElementById('r4-arroz').innerText = Math.round(weight * 2.5); // 175g para 70kg
+
+        // Refeição 5
+        document.getElementById('r5-iogurte').innerText = Math.round(weight * 2.5); // 175g para 70kg
+        document.getElementById('r5-pasta').innerText = Math.round(weight * 0.2); // 14g para 70kg
+    }
+</script>
+</body>
+</html>
