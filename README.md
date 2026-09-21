@@ -16,7 +16,7 @@ GitHub Pages: https://pablopcsantos.github.io/diet-calc/
 - **Sugestões por compatibilidade:** combina tipo de refeição, ingredientes selecionados e proximidade da meta calórica.
 - **Catálogo pesquisável:** terceira aba para filtrar receitas por nome, categoria e ingredientes.
 - **Exportação em PDF:** usa a impressão nativa do navegador.
-- **Sem backend e sem dependências externas:** `index.html` + `recipes-data.js`.
+- **Sem backend e sem dependências externas:** `index.html` + `app.js` + `recipes-data.js`.
 
 ## 📁 Estrutura
 
@@ -26,7 +26,7 @@ GitHub Pages: https://pablopcsantos.github.io/diet-calc/
 ## 💻 Uso offline
 
 1. Baixe o repositório em **Code → Download ZIP**.
-2. Extraia os arquivos mantendo `index.html` e `recipes-data.js` na mesma pasta.
+2. Extraia os arquivos mantendo `index.html`, `app.js` e `recipes-data.js` na mesma pasta.
 3. Abra `index.html` no navegador.
 4. Preencha o perfil, selecione os ingredientes e gere o plano.
 5. Use a aba **Banco de Receitas** para pesquisar as 200 receitas.
