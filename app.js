@@ -1,5 +1,5 @@
 const PANTRY_BASIC_IDS=['sal','pimenta','pimenta-reino','azeite','alho','cebola'];
-const SECONDARY_INGREDIENT_GROUPS=new Set(['Ervas e temperos','Molhos e condimentos','Doces e confeitaria']);
+const SECONDARY_INGREDIENT_GROUPS=new Set(['Vegetais','Ervas e temperos','Molhos e condimentos','Doces e confeitaria']);
 const TAG_IMPLICATIONS={
 'arroz-integral':['arroz'],'batata-doce':['batata'],'farinha-aveia':['aveia'],'pao-integral':['pao'],
 'acucar-mascavo':['acucar'],'pimenta-reino':['pimenta'],'pasta-amendoim':['amendoim'],
