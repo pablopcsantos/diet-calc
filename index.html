@@ -203,16 +203,18 @@
 .weekly-preferences{display:grid;gap:16px}.weekly-preference-card{border:1px solid var(--border);border-radius:12px;padding:18px;background:var(--meal-card-bg);box-shadow:0 4px 12px rgba(31,41,55,.05)}
 .weekly-preference-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:10px}.weekly-preference-header h3{margin:2px 0 0;color:var(--text-main)}.weekly-meal-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--primary);font-weight:800}
 .weekly-preference-hint{color:var(--text-muted);font-size:.9rem;margin:0 0 12px}.weekly-ranking-list{display:grid;gap:8px}.weekly-rank-row{display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center}.weekly-rank-number{display:inline-flex;align-items:center;justify-content:center;background:var(--primary);color:white;border-radius:999px;font-weight:800;padding:7px 6px;font-size:.85rem}.weekly-rank-select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text-main);font-size:.95rem}.weekly-empty-state{padding:12px;border-radius:8px;background:var(--surface-muted);color:var(--text-muted)}
-.weekly-plan-section{margin-top:30px}.weekly-plan-section h2{color:var(--primary);margin-bottom:6px}.weekly-summary{color:var(--text-muted);margin-bottom:14px}.weekly-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--card-bg)}
+.weekly-plan-section{margin-top:30px}.weekly-plan-section h2{color:var(--primary);margin-bottom:6px}.weekly-summary{color:var(--text-muted);margin-bottom:14px}.weekly-export-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}.weekly-export-btn{border:0;border-radius:8px;padding:12px 14px;font-weight:800;cursor:pointer;background:var(--primary);color:#fff;font-size:.95rem}.weekly-export-btn:nth-child(2){background:var(--secondary)}.weekly-export-btn:nth-child(3){background:var(--text-muted)}.weekly-export-btn:hover{opacity:.9}.weekly-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--card-bg)}
 .weekly-plan-table{width:100%;min-width:1180px;border-collapse:collapse}.weekly-plan-table th,.weekly-plan-table td{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px;vertical-align:top}.weekly-plan-table thead th{background:var(--primary);color:#fff;text-align:center;white-space:nowrap}.weekly-plan-table tbody th{background:var(--surface-muted);color:var(--text-main);width:145px;text-align:left}.weekly-plan-table tbody th small{display:block;color:var(--text-muted);font-weight:600;margin-top:3px}.weekly-plan-table td{min-width:135px;background:var(--card-bg)}.weekly-plan-table td strong{display:block;font-size:.84rem;line-height:1.3;color:var(--text-main)}.weekly-plan-table td small{display:block;margin-top:5px;color:var(--text-muted);font-size:.72rem;line-height:1.3}.weekly-pref-badge{display:inline-block;background:var(--alert-bg);color:var(--primary);border-radius:999px;padding:2px 6px;font-weight:800;font-size:.68rem;margin-bottom:5px}.weekly-empty{color:var(--text-muted);font-style:italic;text-align:center}
 .catalog-toolbar{display:grid;grid-template-columns:2fr 1fr 1.2fr;gap:10px;margin-bottom:14px}.catalog-summary{color:var(--text-muted);margin-bottom:15px}.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}.recipe-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card-bg);display:flex;flex-direction:column;box-shadow:0 5px 14px rgba(31,41,55,.07)}.recipe-card-body{padding:18px;flex:1}.recipe-card h3{margin:0 0 8px;color:var(--primary)}.recipe-card details{margin-top:12px}.recipe-card summary{cursor:pointer;font-weight:700;color:var(--primary)}.recipe-footer{padding:12px 18px;background:var(--alert-bg);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:.82rem}.recipe-footer div{text-align:center}.recipe-footer strong{display:block}.no-results{text-align:center;padding:30px;color:var(--text-muted)}
-@media(max-width:720px){.tabs-nav{flex-direction:column}.tab-btn{min-width:0}.catalog-toolbar{grid-template-columns:1fr}.nutrition-row,.recipe-footer{grid-template-columns:repeat(2,1fr)}.weekly-preference-header{flex-direction:column}.weekly-rank-row{grid-template-columns:42px 1fr}}
-.print-report{display:none}
-@page{size:A4;margin:12mm}
+@media(max-width:720px){.tabs-nav{flex-direction:column}.tab-btn{min-width:0}.catalog-toolbar{grid-template-columns:1fr}.nutrition-row,.recipe-footer{grid-template-columns:repeat(2,1fr)}.weekly-preference-header{flex-direction:column}.weekly-rank-row{grid-template-columns:42px 1fr}.weekly-export-actions{grid-template-columns:1fr}}
+.print-report,.weekly-print-report{display:none}
+@page daily-report{size:A4 portrait;margin:12mm}
+@page weekly-report{size:A4 landscape;margin:10mm}
 @media print{
   html,body{background:#fff!important;color:#111!important;margin:0!important;padding:0!important}
   body>.theme-toggle,body>.container{display:none!important}
-  .print-report{display:block!important;font-family:Arial,Helvetica,sans-serif;font-size:10.5pt;line-height:1.45;color:#24323d}
+  body.print-daily .print-report{display:block!important;page:daily-report;font-family:Arial,Helvetica,sans-serif;font-size:10.5pt;line-height:1.45;color:#24323d}
+  body.print-weekly .weekly-print-report{display:block!important;page:weekly-report;font-family:Arial,Helvetica,sans-serif;font-size:8.5pt;line-height:1.3;color:#24323d}
   .print-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #315d6d;padding-bottom:8px;margin-bottom:12px;color:#244f60}
   .print-header h1{font-size:24pt;margin:0;color:#244f60}.print-header p{margin:2px 0 0;color:#51636d}.print-date{font-size:9pt;color:#6b7d86}
   .print-profile,.print-overview table,.print-macros{width:100%;border-collapse:collapse}
@@ -229,6 +231,15 @@
   .print-subsection h4{font-size:10.5pt;margin:8px 0 3px;color:#4f7a68}.print-subsection ul,.print-subsection ol{margin:3px 0 8px;padding-left:20px}
   .print-subsection li{margin-bottom:2px}
   .print-disclaimer{margin-top:20px;padding-top:8px;border-top:1px solid #b8c8ce;font-size:8.5pt;color:#6b7d86}
+  .weekly-print-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #315d6d;padding-bottom:7px;margin-bottom:10px;color:#244f60}
+  .weekly-print-header h1{font-size:20pt;margin:0}.weekly-print-header p{margin:2px 0 0;color:#51636d}
+  .weekly-print-table{width:100%;border-collapse:collapse;table-layout:fixed}.weekly-print-table th,.weekly-print-table td{border:1px solid #b8c8ce;padding:5px;vertical-align:top}
+  .weekly-print-table thead th{background:#315d6d;color:#fff;text-align:center}.weekly-print-table thead th:first-child{width:10%}
+  .weekly-print-table tbody th{background:#eaf1f3;color:#244f60;text-align:left}.weekly-print-table tbody th small{display:block;color:#6b7d86;margin-top:2px}
+  .weekly-print-table td strong{display:block;font-size:7.8pt;line-height:1.25;color:#24323d}.weekly-print-table td small{display:block;margin-top:3px;color:#6b7d86;font-size:7pt}
+  .weekly-print-rank{display:inline-block;background:#eef4f1;color:#4f7a68;border-radius:10px;padding:1px 4px;font-weight:700;font-size:6.8pt;margin-bottom:3px}
+  .weekly-print-ranking-section{margin-top:12px;break-before:page;page-break-before:always}.weekly-print-ranking-section h2{color:#315d6d;margin:0 0 8px}
+  .weekly-print-ranking-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.weekly-print-ranking{border:1px solid #b8c8ce;padding:7px;border-radius:5px}.weekly-print-ranking h3{margin:0 0 5px;color:#4f7a68;font-size:9pt}.weekly-print-ranking ol{margin:0;padding-left:18px}.weekly-print-ranking li{margin-bottom:3px}
 }
 </style>
 </head>
@@ -334,6 +345,11 @@
         <section class="weekly-plan-section">
             <h2>Seu planejamento da semana</h2>
             <p id="weekly-summary" class="weekly-summary"></p>
+            <div class="weekly-export-actions" aria-label="Exportar planejamento semanal">
+                <button type="button" class="weekly-export-btn" onclick="exportWeeklyPDF()">Exportar em PDF</button>
+                <button type="button" class="weekly-export-btn" onclick="exportWeeklySpreadsheet('ods')">Exportar em ODS</button>
+                <button type="button" class="weekly-export-btn" onclick="exportWeeklySpreadsheet('xlsx')">Exportar em XLSX</button>
+            </div>
             <div class="weekly-table-wrap">
                 <div id="weekly-schedule"></div>
             </div>
@@ -355,7 +371,9 @@
 </div>
 
 <section id="print-report" class="print-report" aria-label="Relatório do plano alimentar"></section>
+<section id="weekly-print-report" class="weekly-print-report" aria-label="Relatório do planejamento semanal"></section>
 
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script src="recipes-data.js"></script>
 <script src="app.js"></script>
 </body>
