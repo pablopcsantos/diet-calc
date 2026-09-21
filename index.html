@@ -92,13 +92,13 @@
         header p { color: var(--text-muted); font-size: 1.1rem; }
 
         .tabs-nav {
-            display: flex; gap: 10px; margin-bottom: 30px;
+            display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;
             border-bottom: 2px solid var(--border); padding-bottom: 10px;
         }
         .tab-btn {
             background: var(--surface-contrast); color: var(--text-main); border: 1px solid var(--border);
             padding: 12px 20px; border-radius: 8px; font-weight: 600;
-            cursor: pointer; transition: all 0.3s ease; flex: 1; font-size: 1.1rem;
+            cursor: pointer; transition: all 0.3s ease; flex: 1; min-width: 190px; font-size: 1.05rem;
         }
         .tab-btn.active { background: var(--primary); color: white; }
         .tab-content { display: none; animation: fadeIn 0.4s ease; }
@@ -199,8 +199,14 @@
 .nutrition-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.nutrition-item{background:var(--alert-bg);padding:8px;border-radius:8px;text-align:center}.nutrition-item span{display:block;color:var(--text-muted);font-size:.75rem;text-transform:uppercase}
 .badge{display:inline-block;background:var(--primary);color:#fff;border-radius:999px;padding:3px 9px;font-size:.76rem;font-weight:700;margin-right:5px}.category-badge{background:var(--secondary)}
 .meal-type-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.meal-type-badge{display:inline-block;border:1px solid var(--border);background:var(--surface-muted);color:var(--text-main);border-radius:999px;padding:3px 8px;font-size:.72rem;font-weight:700}
+.weekly-intro{background:var(--surface-muted);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:22px}.weekly-intro h2{color:var(--primary);margin:0 0 8px}.weekly-intro p{margin:6px 0;color:var(--text-muted)}
+.weekly-preferences{display:grid;gap:16px}.weekly-preference-card{border:1px solid var(--border);border-radius:12px;padding:18px;background:var(--meal-card-bg);box-shadow:0 4px 12px rgba(31,41,55,.05)}
+.weekly-preference-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:10px}.weekly-preference-header h3{margin:2px 0 0;color:var(--text-main)}.weekly-meal-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--primary);font-weight:800}
+.weekly-preference-hint{color:var(--text-muted);font-size:.9rem;margin:0 0 12px}.weekly-ranking-list{display:grid;gap:8px}.weekly-rank-row{display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center}.weekly-rank-number{display:inline-flex;align-items:center;justify-content:center;background:var(--primary);color:white;border-radius:999px;font-weight:800;padding:7px 6px;font-size:.85rem}.weekly-rank-select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text-main);font-size:.95rem}.weekly-empty-state{padding:12px;border-radius:8px;background:var(--surface-muted);color:var(--text-muted)}
+.weekly-plan-section{margin-top:30px}.weekly-plan-section h2{color:var(--primary);margin-bottom:6px}.weekly-summary{color:var(--text-muted);margin-bottom:14px}.weekly-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--card-bg)}
+.weekly-plan-table{width:100%;min-width:1180px;border-collapse:collapse}.weekly-plan-table th,.weekly-plan-table td{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px;vertical-align:top}.weekly-plan-table thead th{background:var(--primary);color:#fff;text-align:center;white-space:nowrap}.weekly-plan-table tbody th{background:var(--surface-muted);color:var(--text-main);width:145px;text-align:left}.weekly-plan-table tbody th small{display:block;color:var(--text-muted);font-weight:600;margin-top:3px}.weekly-plan-table td{min-width:135px;background:var(--card-bg)}.weekly-plan-table td strong{display:block;font-size:.84rem;line-height:1.3;color:var(--text-main)}.weekly-plan-table td small{display:block;margin-top:5px;color:var(--text-muted);font-size:.72rem;line-height:1.3}.weekly-pref-badge{display:inline-block;background:var(--alert-bg);color:var(--primary);border-radius:999px;padding:2px 6px;font-weight:800;font-size:.68rem;margin-bottom:5px}.weekly-empty{color:var(--text-muted);font-style:italic;text-align:center}
 .catalog-toolbar{display:grid;grid-template-columns:2fr 1fr 1.2fr;gap:10px;margin-bottom:14px}.catalog-summary{color:var(--text-muted);margin-bottom:15px}.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}.recipe-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card-bg);display:flex;flex-direction:column;box-shadow:0 5px 14px rgba(31,41,55,.07)}.recipe-card-body{padding:18px;flex:1}.recipe-card h3{margin:0 0 8px;color:var(--primary)}.recipe-card details{margin-top:12px}.recipe-card summary{cursor:pointer;font-weight:700;color:var(--primary)}.recipe-footer{padding:12px 18px;background:var(--alert-bg);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:.82rem}.recipe-footer div{text-align:center}.recipe-footer strong{display:block}.no-results{text-align:center;padding:30px;color:var(--text-muted)}
-@media(max-width:720px){.catalog-toolbar{grid-template-columns:1fr}.nutrition-row,.recipe-footer{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.tabs-nav{flex-direction:column}.tab-btn{min-width:0}.catalog-toolbar{grid-template-columns:1fr}.nutrition-row,.recipe-footer{grid-template-columns:repeat(2,1fr)}.weekly-preference-header{flex-direction:column}.weekly-rank-row{grid-template-columns:42px 1fr}}
 .print-report{display:none}
 @page{size:A4;margin:12mm}
 @media print{
@@ -239,7 +245,8 @@
     <div class="tabs-nav">
         <button class="tab-btn active" onclick="switchTab('tab-ingredientes', this)">1. Perfil e Despensa</button>
         <button class="tab-btn" onclick="switchTab('tab-plano', this)">2. Seu Plano Alimentar</button>
-        <button class="tab-btn" onclick="switchTab('tab-receitas', this)">3. Banco de Receitas</button>
+        <button class="tab-btn" onclick="switchTab('tab-semanal', this)">3. Planejamento Semanal</button>
+        <button class="tab-btn" onclick="switchTab('tab-receitas', this)">4. Banco de Receitas</button>
     </div>
 
     <!-- ABA 1 -->
@@ -312,6 +319,28 @@
         <button class="export-btn" onclick="exportPDF()">Exportar Relatório em PDF</button>
     </div>
 
+    <!-- ABA 3 -->
+    <div id="tab-semanal" class="tab-content">
+        <div class="weekly-intro">
+            <h2>Planejamento Semanal</h2>
+            <p>Use suas preferências para transformar as receitas compatíveis com a despensa em um plano variado de segunda a domingo.</p>
+            <p>Quando houver <strong>7 ou mais receitas</strong> para uma refeição, escolha e ordene suas 7 favoritas. Quando houver <strong>menos de 7</strong>, ordene todas as opções disponíveis; o DietCalc repetirá algumas delas de maneira distribuída para completar a semana.</p>
+        </div>
+
+        <h2 class="catalog-title">Classifique suas preferências</h2>
+        <p class="integration-hint">A posição 1 representa sua maior preferência. Se você escolher uma receita que já estiver em outra posição, o sistema troca automaticamente as duas posições para manter o ranking sem duplicidades.</p>
+        <div id="weekly-preferences" class="weekly-preferences"></div>
+
+        <section class="weekly-plan-section">
+            <h2>Seu planejamento da semana</h2>
+            <p id="weekly-summary" class="weekly-summary"></p>
+            <div class="weekly-table-wrap">
+                <div id="weekly-schedule"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ABA 4 -->
     <div id="tab-receitas" class="tab-content">
         <h2 class="catalog-title">Banco de 200 Receitas</h2>
         <p class="integration-hint">Navegue livremente por todas as 200 receitas. Use os filtros desta página para pesquisar por nome, categoria ou <strong>tipo de refeição</strong>. As seleções feitas na despensa ou no plano alimentar não alteram o Banco de Receitas.</p>
