@@ -121,6 +121,14 @@
             border-radius: 12px; border: 1px solid var(--border);
         }
         .ingredient-group h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        .ingredient-catalog-group { padding: 0; overflow: hidden; }
+        .ingredient-catalog-group summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:16px 20px; cursor:pointer; color:var(--primary); font-weight:800; list-style:none; }
+        .ingredient-catalog-group summary::-webkit-details-marker { display:none; }
+        .ingredient-catalog-group summary::after { content:'＋'; color:var(--text-muted); }
+        .ingredient-catalog-group[open] summary::after { content:'−'; }
+        .ingredient-catalog-group summary small { color:var(--text-muted); font-weight:600; margin-left:auto; }
+        .ingredient-catalog-group .checkbox-grid { padding:0 20px 20px; margin-top:0; }
+        .selection-status { color:var(--text-muted); font-size:.9rem; margin-top:10px; }
         .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
         .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; }
         .checkbox-label input { width: 18px; height: 18px; accent-color: var(--primary); }
@@ -235,17 +243,18 @@
         </div>
 
 
-        <p class="integration-hint"><strong>Ingredientes preferidos/disponíveis:</strong> marque os principais abaixo e use a busca para adicionar qualquer ingrediente das 200 receitas. Essas escolhas priorizam as sugestões do plano e também podem filtrar o catálogo.</p>
-        <div id="quick-ingredient-groups"></div>
+        <p class="integration-hint"><strong>Ingredientes preferidos/disponíveis:</strong> marque os ingredientes que você realmente possui em casa. Todos os <strong id="ingredient-catalog-count">190</strong> ingredientes catalogados por tags estão disponíveis abaixo, organizados por grupo. A busca serve apenas para localizar itens mais rapidamente.</p>
         <div class="ingredient-picker">
-            <h3>Adicionar outros ingredientes</h3>
+            <h3>Minha despensa</h3>
             <div class="ingredient-picker-row">
-                <input id="ingredient-search" class="search-input" placeholder="Buscar frango, aveia, brócolis...">
+                <input id="ingredient-search" class="search-input" placeholder="Filtrar ingredientes: frango, aveia, brócolis...">
+                <button class="secondary-btn" type="button" onclick="selectPantryBasics()">Marcar básicos de cozinha</button>
                 <button class="secondary-btn" type="button" onclick="clearIngredients()">Limpar seleção</button>
             </div>
-            <div id="ingredient-menu" class="ingredient-menu"></div>
+            <p class="selection-status"><strong id="selected-count">0</strong> ingrediente(s) marcado(s). Grupos que contêm itens selecionados permanecem abertos.</p>
             <div id="selected-chips" class="chips"></div>
         </div>
+        <div id="quick-ingredient-groups"></div>
         <button class="btn-continue" onclick="document.querySelectorAll('.tab-btn')[1].click()">Gerar Plano com o Banco de Receitas ➔</button>
     </div>
 
@@ -265,13 +274,14 @@
 
     <div id="tab-receitas" class="tab-content">
         <h2 class="catalog-title">Banco de 200 Receitas</h2>
-        <p class="integration-hint">Pesquise por nome, escolha uma categoria e filtre pelas tags dos ingredientes selecionados no Perfil. O modo “Todos” exige todos os ingredientes selecionados; “Qualquer” exige pelo menos um.</p>
+        <p class="integration-hint">Pesquise por nome, escolha uma categoria e filtre pelas tags marcadas na sua despensa. “Posso preparar” exige que a receita inteira seja coberta pelos ingredientes disponíveis; os outros modos servem para descobrir receitas que contenham ingredientes específicos.</p>
         <div class="catalog-toolbar">
             <input id="recipe-search" class="search-input" placeholder="Buscar receita..." oninput="renderRecipeCatalog()">
             <select id="category-filter" class="search-input" onchange="renderRecipeCatalog()"></select>
             <select id="match-mode" class="search-input" onchange="renderRecipeCatalog()">
-                <option value="any">Qualquer ingrediente selecionado</option>
-                <option value="all">Todos os ingredientes selecionados</option>
+                <option value="pantry" selected>Posso preparar com minha despensa</option>
+                <option value="all">Contém todos os ingredientes selecionados</option>
+                <option value="any">Contém qualquer ingrediente selecionado</option>
             </select>
         </div>
         <div class="catalog-summary" id="catalog-summary"></div>
