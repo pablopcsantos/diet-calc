@@ -143,15 +143,18 @@ function weeklyPreferenceSelector(config,candidates,prefs,index){
    </select>
  </div>`;
 }
+function getWeeklyRecipeForSlot(config,mealIndex,dayIndex){
+ const prefs=weeklyPreferences.get(config.mealType)||[];
+ if(!prefs.length)return {recipe:null,preference:0};
+ const recipeId=prefs[(dayIndex+mealIndex)%prefs.length];
+ const recipe=RECIPE_DATABASE.find(r=>r.id===recipeId)||null;
+ return {recipe,preference:recipe?prefs.indexOf(recipeId)+1:0};
+}
 function buildWeeklySchedule(){
  const mealRows=MEAL_CONFIG.map((config,mealIndex)=>{
-   const prefs=weeklyPreferences.get(config.mealType)||[];
    const cells=WEEK_DAYS.map((day,dayIndex)=>{
-     if(!prefs.length)return '<td class="weekly-empty">Sem opção</td>';
-     const recipeId=prefs[(dayIndex+mealIndex)%prefs.length];
-     const recipe=RECIPE_DATABASE.find(r=>r.id===recipeId);
+     const {recipe,preference}=getWeeklyRecipeForSlot(config,mealIndex,dayIndex);
      if(!recipe)return '<td class="weekly-empty">Sem opção</td>';
-     const preference=prefs.indexOf(recipeId)+1;
      return `<td><span class="weekly-pref-badge">#${preference}</span><strong>${esc(recipe.title)}</strong><small>${esc(recipe.nutrition.calories)} kcal · ${esc(recipe.nutrition.protein)} proteína</small></td>`;
    }).join('');
    return `<tr><th scope="row"><strong>${esc(MEAL_TYPES[config.mealType])}</strong><small>${esc(config.time)}</small></th>${cells}</tr>`;
@@ -192,6 +195,101 @@ function renderWeeklyPlanning(){
      ?`O planejamento utiliza ${distinctRecipes.size} receita(s) diferentes nas 35 refeições da semana. As repetições são distribuídas automaticamente quando existem menos de 7 opções para uma refeição.`
      :'Ainda não há receitas compatíveis suficientes para montar o planejamento semanal.';
  }
+}
+function getWeeklyPlanRows(){
+ const rows=[];
+ WEEK_DAYS.forEach((day,dayIndex)=>{
+   MEAL_CONFIG.forEach((config,mealIndex)=>{
+     const {recipe,preference}=getWeeklyRecipeForSlot(config,mealIndex,dayIndex);
+     rows.push({
+       Dia:day.label,
+       Refeição:MEAL_TYPES[config.mealType],
+       Horário:config.time,
+       Preferência:preference||'',
+       Receita:recipe?recipe.title:'Sem opção',
+       Porção:recipe?recipe.servings:'',
+       Calorias:recipe?num(recipe.nutrition.calories):'',
+       Proteínas:recipe?recipe.nutrition.protein:'',
+       Carboidratos:recipe?recipe.nutrition.carbs:'',
+       Gorduras:recipe?recipe.nutrition.fat:''
+     });
+   });
+ });
+ return rows;
+}
+function getWeeklyRankingRows(){
+ const rows=[];
+ MEAL_CONFIG.forEach(config=>{
+   const prefs=weeklyPreferences.get(config.mealType)||[];
+   prefs.forEach((id,index)=>{
+     const recipe=RECIPE_DATABASE.find(r=>r.id===id);
+     if(recipe)rows.push({
+       Refeição:MEAL_TYPES[config.mealType],
+       Posição:index+1,
+       Receita:recipe.title,
+       Calorias:num(recipe.nutrition.calories),
+       Proteínas:recipe.nutrition.protein
+     });
+   });
+ });
+ return rows;
+}
+function weeklyExportFileName(extension){
+ const p=getProfileMetrics();
+ const base=normalize(p?.name||'usuario').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'usuario';
+ return `dietcalc-planejamento-semanal-${base}.${extension}`;
+}
+function buildWeeklyWorkbook(){
+ if(typeof XLSX==='undefined')return null;
+ const wb=XLSX.utils.book_new();
+ const planRows=getWeeklyPlanRows();
+ const rankingRows=getWeeklyRankingRows();
+ const wsPlan=XLSX.utils.json_to_sheet(planRows);
+ const wsRanking=XLSX.utils.json_to_sheet(rankingRows);
+ wsPlan['!cols']=[{wch:11},{wch:23},{wch:9},{wch:11},{wch:42},{wch:16},{wch:10},{wch:12},{wch:14},{wch:11}];
+ wsRanking['!cols']=[{wch:23},{wch:9},{wch:44},{wch:10},{wch:12}];
+ XLSX.utils.book_append_sheet(wb,wsPlan,'Planejamento Semanal');
+ XLSX.utils.book_append_sheet(wb,wsRanking,'Ranking');
+ return wb;
+}
+function exportWeeklySpreadsheet(format){
+ const wb=buildWeeklyWorkbook();
+ if(!wb){
+   alert('Não foi possível carregar o módulo de exportação de planilhas. Verifique sua conexão e tente novamente.');
+   return;
+ }
+ const type=format==='ods'?'ods':'xlsx';
+ XLSX.writeFile(wb,weeklyExportFileName(type),{bookType:type,compression:true});
+}
+function buildWeeklyPrintReport(){
+ const host=document.getElementById('weekly-print-report');
+ const p=getProfileMetrics();
+ if(!host||!p)return;
+ const bodyRows=MEAL_CONFIG.map((config,mealIndex)=>{
+   const cells=WEEK_DAYS.map((day,dayIndex)=>{
+     const {recipe,preference}=getWeeklyRecipeForSlot(config,mealIndex,dayIndex);
+     if(!recipe)return '<td>Sem opção</td>';
+     return `<td><span class="weekly-print-rank">#${preference}</span><strong>${esc(recipe.title)}</strong><small>${esc(recipe.nutrition.calories)} kcal · ${esc(recipe.nutrition.protein)}</small></td>`;
+   }).join('');
+   return `<tr><th><strong>${esc(MEAL_TYPES[config.mealType])}</strong><small>${esc(config.time)}</small></th>${cells}</tr>`;
+ }).join('');
+ const ranking=MEAL_CONFIG.map(config=>{
+   const prefs=weeklyPreferences.get(config.mealType)||[];
+   return `<div class="weekly-print-ranking"><h3>${esc(MEAL_TYPES[config.mealType])}</h3><ol>${prefs.map(id=>{const r=RECIPE_DATABASE.find(x=>x.id===id);return r?`<li>${esc(r.title)}</li>`:''}).join('')}</ol></div>`;
+ }).join('');
+ host.innerHTML=`<div class="weekly-print-header"><div><h1>DietCalc</h1><p>Planejamento semanal de ${esc(p.name)}</p></div><div>Gerado em ${new Date().toLocaleDateString('pt-BR')}</div></div>
+ <table class="weekly-print-table"><thead><tr><th>Refeição</th>${WEEK_DAYS.map(day=>`<th>${esc(day.label)}</th>`).join('')}</tr></thead><tbody>${bodyRows}</tbody></table>
+ <section class="weekly-print-ranking-section"><h2>Ranking de preferências</h2><div class="weekly-print-ranking-grid">${ranking}</div></section>
+ <p class="print-disclaimer">O planejamento utiliza as receitas compatíveis com a despensa e as preferências definidas pelo usuário. Repetições são distribuídas automaticamente quando há menos de 7 receitas disponíveis para uma refeição.</p>`;
+}
+function clearPrintMode(){
+ document.body.classList.remove('print-daily','print-weekly');
+}
+function exportWeeklyPDF(){
+ buildWeeklyPrintReport();
+ clearPrintMode();
+ document.body.classList.add('print-weekly');
+ requestAnimationFrame(()=>window.print());
 }
 function renderCategoryFilter(){document.getElementById('category-filter').innerHTML='<option value="">Todas as categorias</option>'+Object.entries(RECIPE_CATEGORIES).map(([id,label])=>`<option value="${id}">${esc(label)}</option>`).join('')}
 function renderMealTypeFilter(){document.getElementById('meal-type-filter').innerHTML='<option value="">Todos os tipos de refeição</option>'+Object.entries(MEAL_TYPES).map(([id,label])=>`<option value="${id}">${esc(label)}</option>`).join('')}
@@ -266,7 +364,7 @@ function buildPrintReport(){
  <div class="print-details">${details}</div>
  <p class="print-disclaimer">As quantidades e informações nutricionais são as cadastradas nas receitas originais. Este relatório é uma ferramenta de organização e não substitui orientação individualizada de nutricionista ou profissional de saúde.</p>`;
 }
-function exportPDF(){buildPrintReport();requestAnimationFrame(()=>window.print())}
+function exportPDF(){buildPrintReport();clearPrintMode();document.body.classList.add('print-daily');requestAnimationFrame(()=>window.print())}
 function init(){
  syncThemeToggle();
  initializeDefaultIngredients();
@@ -289,3 +387,4 @@ function init(){
  renderRecipeCatalog();
 }
 window.addEventListener('load',init);
+window.addEventListener('afterprint',clearPrintMode);
