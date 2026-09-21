@@ -158,6 +158,28 @@
             .explanations { page-break-inside: avoid; border: 1px solid #ccc; background: white; }
         }
     </style>
+
+<style>
+.container{max-width:1100px}
+.integration-hint{color:var(--text-muted);font-size:.92rem}
+.ingredient-picker{border:1px solid var(--border);border-radius:12px;padding:18px;margin:22px 0}
+.ingredient-picker h3,.catalog-title{color:var(--primary);margin-top:0}
+.ingredient-picker-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search-input{padding:11px;font-size:1rem;border:2px solid var(--border);border-radius:8px;outline:none;background:var(--input-bg);color:var(--text-main)}
+.ingredient-picker-row .search-input{flex:1;min-width:220px}
+.secondary-btn{background:var(--text-muted);color:#fff;padding:11px 16px;border:0;border-radius:8px;cursor:pointer;font-weight:700}
+.ingredient-menu{max-height:280px;overflow:auto;border:1px solid var(--border);border-radius:10px;margin-top:8px;display:none;background:var(--card-bg)}
+.ingredient-menu.open{display:block}
+.ingredient-option{display:flex;justify-content:space-between;width:100%;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--text-main);padding:10px 12px;text-align:left;cursor:pointer}
+.ingredient-option:hover{background:var(--alert-bg)}.ingredient-option small{color:var(--text-muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chip{display:inline-flex;align-items:center;gap:6px;background:var(--alert-bg);padding:6px 10px;border-radius:999px;font-size:.9rem}.chip button{border:0;background:transparent;color:#dc2626;cursor:pointer}
+.target-note{color:var(--text-muted);font-size:.9rem;margin:-4px 0 12px}.subsection-title{color:var(--primary);margin:14px 0 6px}
+.nutrition-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.nutrition-item{background:var(--alert-bg);padding:8px;border-radius:8px;text-align:center}.nutrition-item span{display:block;color:var(--text-muted);font-size:.75rem;text-transform:uppercase}
+.badge{display:inline-block;background:var(--primary);color:#fff;border-radius:999px;padding:3px 9px;font-size:.76rem;font-weight:700;margin-right:5px}.category-badge{background:var(--secondary)}
+.catalog-toolbar{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:14px}.catalog-summary{color:var(--text-muted);margin-bottom:15px}.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}.recipe-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card-bg);display:flex;flex-direction:column}.recipe-card-body{padding:18px;flex:1}.recipe-card h3{margin:0 0 8px;color:var(--primary)}.recipe-card details{margin-top:12px}.recipe-card summary{cursor:pointer;font-weight:700;color:var(--primary)}.recipe-footer{padding:12px 18px;background:var(--alert-bg);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:.82rem}.recipe-footer div{text-align:center}.recipe-footer strong{display:block}.no-results{text-align:center;padding:30px;color:var(--text-muted)}
+@media(max-width:720px){.catalog-toolbar{grid-template-columns:1fr}.nutrition-row,.recipe-footer{grid-template-columns:repeat(2,1fr)}}
+@media print{#tab-receitas{display:none!important}}
+</style>
 </head>
 <body>
 
@@ -166,12 +188,13 @@
 <div class="container">
     <header>
         <h1>DietCalc - Musculação</h1>
-        <p>Plano alimentar adaptado à sua rotina, biotipo e orçamento.</p>
+        <p>Plano alimentar com banco offline de 200 receitas e filtro por ingredientes.</p>
     </header>
 
     <div class="tabs-nav">
         <button class="tab-btn active" onclick="switchTab('tab-ingredientes', this)">1. Perfil e Despensa</button>
         <button class="tab-btn" onclick="switchTab('tab-plano', this)">2. Seu Plano Alimentar</button>
+        <button class="tab-btn" onclick="switchTab('tab-receitas', this)">3. Banco de Receitas</button>
     </div>
 
     <!-- ABA 1 -->
@@ -211,20 +234,19 @@
             </div>
         </div>
 
-        <div class="ingredient-group">
-            <h3>Proteínas</h3>
-            <div class="checkbox-grid" id="grid-proteinas"></div>
-        </div>
-        <div class="ingredient-group">
-            <h3>Carboidratos</h3>
-            <div class="checkbox-grid" id="grid-carbos"></div>
-        </div>
-        <div class="ingredient-group">
-            <h3>Gorduras Boas</h3>
-            <div class="checkbox-grid" id="grid-gorduras"></div>
-        </div>
 
-        <button class="btn-continue" onclick="document.querySelectorAll('.tab-btn')[1].click()">Gerar Relatório e Plano Alimentar ➔</button>
+        <p class="integration-hint"><strong>Ingredientes preferidos/disponíveis:</strong> marque os principais abaixo e use a busca para adicionar qualquer ingrediente das 200 receitas. Essas escolhas priorizam as sugestões do plano e também podem filtrar o catálogo.</p>
+        <div id="quick-ingredient-groups"></div>
+        <div class="ingredient-picker">
+            <h3>Adicionar outros ingredientes</h3>
+            <div class="ingredient-picker-row">
+                <input id="ingredient-search" class="search-input" placeholder="Buscar frango, aveia, brócolis...">
+                <button class="secondary-btn" type="button" onclick="clearIngredients()">Limpar seleção</button>
+            </div>
+            <div id="ingredient-menu" class="ingredient-menu"></div>
+            <div id="selected-chips" class="chips"></div>
+        </div>
+        <button class="btn-continue" onclick="document.querySelectorAll('.tab-btn')[1].click()">Gerar Plano com o Banco de Receitas ➔</button>
     </div>
 
     <!-- ABA 2 -->
@@ -232,197 +254,33 @@
         <div class="calc-results" id="report-header"></div>
         <div id="meals-container"></div>
 
-        <div class="explanations">
-            <h2>Dicas para Sustentar a Dieta</h2>
-            
-            <h3>Marmitas e Armazenamento</h3>
-            <p>Se você tem pouco tempo, cozinhar refeições em grande quantidade no domingo[cite: 4] e guardá-las salva o planejamento. Para congelar, dê preferência a <strong>recipientes de vidro</strong> para evitar o vazamento de substâncias como o BPA presente no plástico[cite: 5]. O frango com batata doce[cite: 4] e o escondidinho[cite: 5] são excelentes para isso.</p>
-            
-            <h3>Economia Inteligente</h3>
-            <p>Manter a dieta não precisa ser caro[cite: 2]. Duas regras de ouro: nunca compre aveia de caixinha no supermercado; vá a casas de cereais e compre a granel (é mais barato e mais puro)[cite: 2]. Além disso, embora o ovo seja barato, o <strong>frango ganha em custo-benefício</strong> na proporção de grama de proteína por real gasto[cite: 2]. Para suplementação, o Whey Protein a granel entrega a mesma qualidade que marcas caras por uma fração do preço[cite: 2].</p>
-
-            <h3>Rotina Corrida (Refeição 3)</h3>
-            <p>O aplicativo gerou opções específicas para a Refeição 3 focadas no horário de trabalho, que não exigem geladeira ou micro-ondas. Se mesmo assim precisar de outras alternativas, os shakes em pó (misturados com água na hora) são perfeitos[cite: 6]. Você pode monitorar as calorias destas opções práticas usando aplicativos como o MyFitnessPal[cite: 6].</p>
+<div class="explanations">
+            <h2>Como as sugestões são escolhidas</h2>
+            <p>O DietCalc distribui a meta calórica diária entre cinco refeições e procura, no banco de 200 receitas, opções adequadas ao tipo de refeição. Receitas com mais ingredientes selecionados recebem prioridade; em seguida, o sistema considera a proximidade entre as calorias da receita e a meta aproximada daquele horário.</p>
+            <p><strong>Importante:</strong> as quantidades e informações nutricionais exibidas são as da receita original e não são redimensionadas automaticamente. A meta por refeição funciona como referência de seleção, não como prescrição nutricional.</p>
         </div>
 
         <button class="export-btn" onclick="window.print()">Exportar Relatório em PDF</button>
     </div>
+
+    <div id="tab-receitas" class="tab-content">
+        <h2 class="catalog-title">Banco de 200 Receitas</h2>
+        <p class="integration-hint">Pesquise por nome, escolha uma categoria e filtre pelas tags dos ingredientes selecionados no Perfil. O modo “Todos” exige todos os ingredientes selecionados; “Qualquer” exige pelo menos um.</p>
+        <div class="catalog-toolbar">
+            <input id="recipe-search" class="search-input" placeholder="Buscar receita..." oninput="renderRecipeCatalog()">
+            <select id="category-filter" class="search-input" onchange="renderRecipeCatalog()"></select>
+            <select id="match-mode" class="search-input" onchange="renderRecipeCatalog()">
+                <option value="any">Qualquer ingrediente selecionado</option>
+                <option value="all">Todos os ingredientes selecionados</option>
+            </select>
+        </div>
+        <div class="catalog-summary" id="catalog-summary"></div>
+        <div class="recipe-grid" id="recipe-grid"></div>
+    </div>
 </div>
 
-<script>
-    function toggleTheme() {
-        const html = document.documentElement;
-        if (html.getAttribute('data-theme') === 'light') {
-            html.setAttribute('data-theme', 'dark');
-        } else {
-            html.setAttribute('data-theme', 'light');
-        }
-    }
 
-    const allIngredients = {
-        proteinas: [
-            { id: 'ovo', label: 'Ovos Inteiros' }, { id: 'whey', label: 'Whey Protein / Albumina' },
-            { id: 'frango', label: 'Peito de Frango' }, { id: 'patinho', label: 'Carne Vermelha Moída' },
-            { id: 'tilapia', label: 'Filé de Tilápia / Peixe' }, { id: 'iogurte', label: 'Iogurte Natural' },
-            { id: 'queijo', label: 'Queijo (Mussarela/Cottage)' }, { id: 'presunto', label: 'Presunto Magro' }
-        ],
-        carbos: [
-            { id: 'aveia', label: 'Aveia (Flocos/Farinha)' }, { id: 'banana', label: 'Banana / Frutas' },
-            { id: 'pao', label: 'Pão Integral' }, { id: 'batata', label: 'Batata Doce / Inglesa' },
-            { id: 'arroz', label: 'Arroz Branco / Integral' }, { id: 'mandioca', label: 'Mandioca / Aipim' },
-            { id: 'macarrao', label: 'Macarrão Integral' }, { id: 'feijao', label: 'Feijão' }
-        ],
-        gorduras: [
-            { id: 'amendoim', label: 'Pasta de Amendoim' }, { id: 'abacate', label: 'Abacate' },
-            { id: 'azeite', label: 'Azeite Extra Virgem' }, { id: 'castanhas', label: 'Mix de Castanhas' }
-        ]
-    };
-
-    const dietData = {
-        1: { title: "Refeição 1: Café da Manhã", time: "07:00", recipes: [
-            { title: "Panqueca Proteica", tags: ['ovo', 'aveia', 'banana'], ing: (w) => `<li><strong>${Math.max(2, Math.round(w * 0.04))}</strong> ovos inteiros</li><li><strong>${Math.round(w * 0.71)}g</strong> aveia</li><li><strong>1</strong> banana</li>`, prep: "Bata no liquidificador e asse em frigideira[cite: 3, 4]." },
-            { title: "Mingau de Aveia", tags: ['aveia', 'whey', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 0.8)}g</strong> aveia</li><li><strong>1 copo</strong> de leite integral</li><li><strong>${Math.round(w * 0.4)}g</strong> Whey</li><li><strong>1 col. sopa</strong> pasta de amendoim</li>`, prep: "Aqueça a aveia com leite por 2 min, depois misture o restante[cite: 6]." },
-            { title: "Shake Hipercalórico", tags: ['whey', 'banana', 'aveia', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 0.5)}g</strong> Whey/Albumina</li><li><strong>1</strong> banana</li><li><strong>${Math.round(w * 0.7)}g</strong> aveia</li><li><strong>1 col. sopa</strong> pasta de amendoim</li>`, prep: "Bata tudo no liquidificador. Ótimo para quem treina cedo[cite: 4, 6]." },
-            { title: "Ovos Mexidos Turbinados", tags: ['ovo', 'queijo', 'presunto', 'pao'], ing: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> ovos</li><li><strong>2</strong> fatias de queijo</li><li><strong>2</strong> fatias de presunto</li><li><strong>2</strong> fatias pão integral</li>`, prep: "Faça os ovos mexidos com cebola e tomate, coloque no pão torrado[cite: 6]." },
-            { title: "Iogurte Proteico", tags: ['iogurte', 'aveia', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> iogurte natural</li><li><strong>${Math.round(w * 0.6)}g</strong> aveia</li><li><strong>1 col. sopa</strong> pasta de amendoim</li>`, prep: "Misture tudo em um bowl. Refeição rápida e sem fogão[cite: 3]." }
-        ]},
-        2: { title: "Refeição 2: Almoço", time: "12:00", recipes: [
-            { title: "Clássico: Frango e Batata Doce", tags: ['frango', 'batata'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> frango</li><li><strong>${Math.round(w * 3.0)}g</strong> batata doce</li><li>Vegetais (brócolis/couve-flor)</li>`, prep: "Cozinhe a batata até amolecer. Grelhe o frango.[cite: 3, 4, 5]." },
-            { title: "Arroz Integral e Frango", tags: ['frango', 'arroz'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> frango</li><li><strong>${Math.round(w * 2.5)}g</strong> arroz integral</li><li>Vegetais variados</li>`, prep: "Frango desfiado ou grelhado com arroz cozido normalmente[cite: 3, 5]." },
-            { title: "Escondidinho de Batata Doce", tags: ['patinho', 'batata'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> patinho moído</li><li><strong>${Math.round(w * 3.0)}g</strong> batata doce (em purê)</li>`, prep: "Faça camadas de purê e carne moída. Asse por 15 min[cite: 5]." },
-            { title: "Macarrão com Frango", tags: ['macarrao', 'frango'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> macarrão integral</li><li><strong>${Math.round(w * 2.1)}g</strong> peito de frango</li><li>Abobrinha refogada</li>`, prep: "Cozinhe o macarrão e misture com o frango em cubos e a abobrinha[cite: 5]." },
-            { title: "Tilápia com Mandioca", tags: ['tilapia', 'mandioca'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> filé de tilápia</li><li><strong>${Math.round(w * 2.5)}g</strong> mandioca (aipim)</li>`, prep: "Asse o peixe e sirva com a mandioca cozida[cite: 3, 5]." }
-        ]},
-        3: { title: "Refeição 3: Lanche no Trabalho (Sem Geladeira)", time: "16:00", recipes: [
-            { title: "Sanduíche de Pasta de Amendoim", tags: ['pao', 'amendoim', 'banana'], ing: (w) => `<li><strong>2</strong> fatias de pão integral</li><li><strong>2 col. sopa</strong> pasta de amendoim</li><li><strong>1</strong> banana fatiada</li>`, prep: "Passe a pasta no pão e adicione a banana. Não estraga fora da geladeira." },
-            { title: "Shake Portátil (Pó)", tags: ['whey', 'aveia'], ing: (w) => `<li><strong>${Math.round(w * 0.5)}g</strong> Whey/Albumina em pó</li><li><strong>${Math.round(w * 0.7)}g</strong> aveia (farinha)</li>`, prep: "Leve o pó seco na coqueteleira. No trabalho, adicione água gelada do bebedouro[cite: 6]." },
-            { title: "Mix de Castanhas e Whey", tags: ['castanhas', 'whey'], ing: (w) => `<li><strong>40g</strong> Mix de castanhas</li><li><strong>${Math.round(w * 0.5)}g</strong> Whey Protein (em pó)</li>`, prep: "Coma as castanhas e beba o whey misturado com água. Prático e não perecível." },
-            { title: "Panqueca Fria", tags: ['ovo', 'aveia'], ing: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> claras de ovo (fritas)</li><li><strong>${Math.round(w * 0.7)}g</strong> aveia</li>`, prep: "Faça a panqueca em casa de manhã, guarde na tapueware e coma fria no trabalho[cite: 4]." },
-            { title: "Barrinha Caseira", tags: ['aveia', 'amendoim', 'whey'], ing: (w) => `<li><strong>${Math.round(w * 0.5)}g</strong> aveia</li><li><strong>1 col. sopa</strong> pasta amendoim</li><li><strong>${Math.round(w * 0.4)}g</strong> Whey</li>`, prep: "Misture com pouca água até virar massa. Molde, congele na noite anterior e leve no papel alumínio." }
-        ]},
-        4: { title: "Refeição 4: Jantar / Pós-Treino", time: "20:00", recipes: [
-            { title: "Frango, Arroz e Feijão", tags: ['frango', 'arroz', 'feijao'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> frango</li><li><strong>${Math.round(w * 1.5)}g</strong> arroz branco</li><li><strong>${Math.round(w * 1.5)}g</strong> feijão</li>`, prep: "Clássico brasileiro. O arroz branco ajuda a repor o glicogênio rapidamente[cite: 3]." },
-            { title: "Hambúrguer Caseiro de Patinho", tags: ['patinho', 'batata'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> hambúrguer de patinho</li><li><strong>${Math.round(w * 2.5)}g</strong> batata inglesa cozida</li>`, prep: "Modele a carne moída com cebola e alho, asse ou grelhe[cite: 3, 4]." },
-            { title: "Macarrão com Carne Moída", tags: ['macarrao', 'patinho'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> macarrão integral</li><li><strong>${Math.round(w * 2.1)}g</strong> patinho moído</li>`, prep: "Macarrão à bolonhesa magro[cite: 5]." },
-            { title: "Frango com Batata (Requentar)", tags: ['frango', 'batata'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> frango</li><li><strong>${Math.round(w * 3.0)}g</strong> batata doce</li>`, prep: "Aqueça o que sobrou do almoço. Adicione pouca água no micro-ondas para não ressecar[cite: 4]." },
-            { title: "Tilápia com Arroz e Brócolis", tags: ['tilapia', 'arroz'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> filé de tilápia</li><li><strong>${Math.round(w * 2.0)}g</strong> arroz integral</li>`, prep: "Grelhe o peixe e sirva com arroz e brócolis cozido no vapor[cite: 3]." }
-        ]},
-        5: { title: "Refeição 5: Ceia", time: "23:00", recipes: [
-            { title: "Iogurte com Amendoim", tags: ['iogurte', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> iogurte natural</li><li><strong>1 col. sopa</strong> pasta de amendoim</li>`, prep: "Misture bem. A gordura atrasa a digestão no sono[cite: 3]." },
-            { title: "Ovos com Azeite", tags: ['ovo', 'azeite'], ing: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> ovos cozidos</li><li><strong>1 col. sopa</strong> azeite</li>`, prep: "Cozinhe os ovos e regue com azeite." },
-            { title: "Shake da Preguiça", tags: ['whey', 'leite'], ing: (w) => `<li><strong>${Math.round(w * 0.5)}g</strong> Whey/Albumina</li><li><strong>300ml</strong> leite</li>`, prep: "Dia cansativo sem vontade de lavar louça? Bata no liquidificador e vá dormir[cite: 4]." },
-            { title: "Vitamina de Banana", tags: ['whey', 'banana'], ing: (w) => `<li><strong>${Math.round(w * 0.4)}g</strong> Whey</li><li><strong>1</strong> banana</li><li><strong>300ml</strong> leite</li>`, prep: "Bata tudo no liquidificador[cite: 3]." },
-            { title: "Creme de Abacate", tags: ['abacate', 'whey'], ing: (w) => `<li><strong>${Math.round(w * 1.5)}g</strong> abacate</li><li><strong>${Math.round(w * 0.4)}g</strong> Whey</li>`, prep: "Amasse o abacate e misture o pó até virar um creme doce." }
-        ]}
-    };
-
-    function init() {
-        renderCheckboxes();
-        buildMealCardsHTML();
-        updateCalculations();
-    }
-
-    function renderCheckboxes() {
-        ['proteinas', 'carbos', 'gorduras'].forEach(category => {
-            const grid = document.getElementById(`grid-${category}`);
-            allIngredients[category].forEach(item => {
-                // Remove required 'leite' for simplicity, assuming basic items are always ok if selected
-                grid.innerHTML += `<label class="checkbox-label"><input type="checkbox" class="ing-checkbox" value="${item.id}" checked onchange="applyFiltersAndRender()"> ${item.label}</label>`;
-            });
-        });
-    }
-
-    function switchTab(tabId, btnElement) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        btnElement.classList.add('active');
-        if (tabId === 'tab-plano') applyFiltersAndRender();
-    }
-
-    function updateCalculations() {
-        const name = document.getElementById('userName').value || "Usuário";
-        const gender = document.getElementById('gender').value;
-        const weight = parseFloat(document.getElementById('weight').value);
-        const height = parseFloat(document.getElementById('height').value);
-        const age = parseFloat(document.getElementById('age').value);
-        const activity = parseFloat(document.getElementById('activity').value);
-
-        if(!weight || !height || !age) return;
-
-        let tmb = gender === 'M' ? 66 + (13.7 * weight) + (5 * height) - (6.76 * age) : 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
-        const tdee = tmb * activity;
-        const hipertrofia = tdee + 250; // Adicionando bloco de 250kcal
-
-        document.getElementById('report-header').innerHTML = `
-            <h3 id="report-name">Plano Nutricional de ${name}</h3>
-            <p>Taxa Metabólica Basal (TMB): <strong>${Math.round(tmb)} kcal/dia</strong></p>
-            <p>Gasto Diário (Manutenção): <strong>${Math.round(tdee)} kcal/dia</strong></p>
-            <p>Meta para Hipertrofia (+250kcal): <strong>${Math.round(hipertrofia)} kcal/dia</strong></p>
-        `;
-
-        applyFiltersAndRender();
-    }
-
-    function buildMealCardsHTML() {
-        const container = document.getElementById('meals-container');
-        let html = '';
-        for (let i = 1; i <= 5; i++) {
-            html += `
-            <div class="meal-card">
-                <div class="meal-header">
-                    <h2 class="meal-title">${dietData[i].title}</h2>
-                    <span class="meal-time">⌚ Sugestão: ${dietData[i].time}</span>
-                </div>
-                <div class="option-selector"><select id="select-m${i}" onchange="renderMealContent()"></select></div>
-                <div class="meal-content" id="content-m${i}"></div>
-            </div>`;
-        }
-        container.innerHTML = html;
-    }
-
-    function applyFiltersAndRender() {
-        const checkedTags = Array.from(document.querySelectorAll('.ing-checkbox:checked')).map(cb => cb.value);
-        // Explicit bypass logic for simple ingredients not mapped to checkboxes
-        const bypass = ['leite']; 
-
-        for (let i = 1; i <= 5; i++) {
-            const selectEl = document.getElementById(`select-m${i}`);
-            selectEl.innerHTML = ''; 
-
-            const validRecipes = dietData[i].recipes.map((recipe, index) => ({recipe, originalIndex: index}))
-                .filter(item => item.recipe.tags.every(tag => checkedTags.includes(tag) || bypass.includes(tag)));
-
-            if (validRecipes.length > 0) {
-                validRecipes.forEach(item => {
-                    selectEl.innerHTML += `<option value="${item.originalIndex}">${item.recipe.title}</option>`;
-                });
-            } else {
-                selectEl.innerHTML = `<option value="-1">Nenhuma receita compatível selecionada</option>`;
-            }
-        }
-        renderMealContent();
-    }
-
-    function renderMealContent() {
-        const weight = parseFloat(document.getElementById('weight').value);
-        if (!weight) return;
-
-        for (let i = 1; i <= 5; i++) {
-            const val = document.getElementById(`select-m${i}`).value;
-            const contentDiv = document.getElementById(`content-m${i}`);
-
-            if (val === "-1") {
-                contentDiv.innerHTML = `<div class="meal-prep" style="border-left-color: #EF4444; background: var(--alert-bg); color: var(--text-main);">Aviso: Despensa vazia para este horário. Libere mais ingredientes.</div>`;
-                continue;
-            }
-
-            const recipe = dietData[i].recipes[val];
-            contentDiv.innerHTML = `<h4>Ingredientes:</h4><ul>${recipe.ing(weight)}</ul><div class="meal-prep"><strong>Preparo:</strong> ${recipe.prep}</div>`;
-        }
-    }
-
-    window.onload = init;
-</script>
+<script src="recipes-data.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

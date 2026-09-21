@@ -1,33 +1,42 @@
 # DietCalc - Plano Alimentar para Iniciantes na Musculação 🏋️‍♂️🥗
 
-Um WebApp simples, responsivo e que funciona **100% offline**, desenvolvido para calcular porções alimentares com base no peso de indivíduos saudáveis que estão iniciando no universo da musculação. 
+WebApp responsivo e **100% offline** para estimar necessidades energéticas, montar um plano alimentar de cinco refeições e explorar um banco local de **200 receitas**.
 
-## 🌐 Demonstração Online (Preview)
-Você pode testar a ferramenta diretamente no seu navegador, sem precisar instalar nada, acessando o link do GitHub Pages:
-**[👉 Clique aqui para acessar o WebApp](https://pablopcsantos.github.io/diet-calc/)** *(Nota: altere este link com as informações do seu repositório após ativar o GitHub Pages nas configurações)*.
+## 🌐 Demonstração Online
+
+GitHub Pages: https://pablopcsantos.github.io/diet-calc/
 
 ## ⚡ Funcionalidades
-- **Cálculo Dinâmico:** As gramaturas dos alimentos (carboidratos e proteínas) são ajustadas automaticamente ao inserir o peso do indivíduo.
-- **5 Refeições Estruturadas:** Café da manhã, Almoço, Pré-treino, Pós-treino/Jantar e Ceia.
-- **Base Teórica:** Inclui uma seção educativa explicando o papel de cada refeição e o motivo da escolha dos ingredientes.
-- **Exportação em PDF:** Botão integrado que utiliza a função nativa do sistema para gerar e salvar o plano em formato PDF de forma instantânea.
-- **Funcionamento Offline:** Não requer conexão com a internet após o primeiro download/acesso. Não possui banco de dados nem dependências externas (sem NPM, sem Node.js).
 
-## 💻 Como rodar o aplicativo de forma OFFLINE no seu computador
+- **Cálculo energético:** estima TMB, manutenção e uma meta de hipertrofia de referência.
+- **Banco offline com 200 receitas:** receitas completas com ingredientes, preparo, porções e informações nutricionais.
+- **Tags de ingredientes:** receitas indexadas para pesquisa e filtragem.
+- **Perfil de ingredientes:** ingredientes preferidos/disponíveis priorizam sugestões do plano.
+- **5 refeições estruturadas:** café da manhã, almoço, lanche/pré-treino, jantar/pós-treino e ceia.
+- **Sugestões por compatibilidade:** combina tipo de refeição, ingredientes selecionados e proximidade da meta calórica.
+- **Catálogo pesquisável:** terceira aba para filtrar receitas por nome, categoria e ingredientes.
+- **Exportação em PDF:** usa a impressão nativa do navegador.
+- **Sem backend e sem dependências externas:** `index.html` + `app.js` + `recipes-data.js`.
 
-Como a aplicação é construída inteiramente com tecnologias web básicas (HTML, CSS e JavaScript), você pode usá-la no seu computador mesmo sem internet. Siga os passos abaixo:
+## 📁 Estrutura
 
-1. **Baixe o código:**
-   - No topo desta página do GitHub, clique no botão verde **"<> Code"**.
-   - Selecione **"Download ZIP"**.
-2. **Extraia os arquivos:**
-   - Encontre o arquivo `.zip` baixado no seu computador e extraia (descompacte) a pasta.
-3. **Abra o aplicativo:**
-   - Dentro da pasta descompactada, localize o arquivo chamado `index.html`.
-   - Dê um duplo clique nele. Ele será aberto automaticamente no seu navegador padrão (Chrome, Edge, Safari, Firefox).
-4. **Exportando para PDF offline:**
-   - Preencha seu peso, clique em "Calcular Porções".
-   - Clique no botão **"Exportar Plano como PDF"** no fim da página. O navegador abrirá a tela de impressão. Em "Destino" ou "Impressora", selecione a opção **"Salvar como PDF"**.
+- `index.html` — interface, cálculo energético, plano alimentar e filtros.
+- `recipes-data.js` — banco offline das 200 receitas e catálogo de tags/ingredientes.
 
-## ⚠️ Aviso Médico e Nutricional
-Este aplicativo utiliza multiplicadores matemáticos baseados em diretrizes genéricas para indivíduos de 70kg (como base de escala) sem doenças pré-existentes. **Não substitui a consulta com um Nutricionista ou Médico.** Pessoas com diabetes, hipertensão ou problemas renais devem procurar acompanhamento clínico especializado.
+## 💻 Uso offline
+
+1. Baixe o repositório em **Code → Download ZIP**.
+2. Extraia os arquivos mantendo `index.html`, `app.js` e `recipes-data.js` na mesma pasta.
+3. Abra `index.html` no navegador.
+4. Preencha o perfil, selecione os ingredientes e gere o plano.
+5. Use a aba **Banco de Receitas** para pesquisar as 200 receitas.
+
+## Como o plano usa o banco de receitas
+
+A meta diária é distribuída em cinco refeições. Para cada horário, o DietCalc seleciona categorias adequadas e ordena as opções pela compatibilidade com os ingredientes escolhidos e pela proximidade das calorias da receita com a meta aproximada daquele horário.
+
+As **quantidades das receitas originais são preservadas**. O aplicativo não redimensiona automaticamente as gramaturas para forçar uma receita a atingir a meta calórica.
+
+## ⚠️ Aviso médico e nutricional
+
+O aplicativo utiliza fórmulas e multiplicadores gerais e não substitui consulta com nutricionista ou médico. Pessoas com condições de saúde, necessidades dietéticas específicas, alergias ou uso de medicamentos devem procurar acompanhamento profissional individualizado.
