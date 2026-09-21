@@ -17,7 +17,19 @@ const MEAL_CONFIG=[
 const catalogById=new Map(INGREDIENT_CATALOG.map(x=>[x.id,x]));
 const selectedIngredients=new Set();
 let dailyTarget=0;
-function toggleTheme(){const h=document.documentElement;h.dataset.theme=h.dataset.theme==='light'?'dark':'light'}
+function syncThemeToggle(){
+ const button=document.getElementById('theme-toggle');
+ if(!button)return;
+ const isDark=document.documentElement.dataset.theme==='dark';
+ button.textContent=isDark?'☀️ Modo claro':'🌙 Modo escuro';
+ button.setAttribute('aria-label',isDark?'Ativar modo claro':'Ativar modo escuro');
+ button.setAttribute('aria-pressed',String(isDark));
+}
+function toggleTheme(){
+ const h=document.documentElement;
+ h.dataset.theme=h.dataset.theme==='light'?'dark':'light';
+ syncThemeToggle();
+}
 function esc(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function normalize(v=''){return String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
 function num(v){const m=String(v||'').replace(',','.').match(/[0-9]+(?:\.[0-9]+)?/);return m?Number(m[0]):0}
@@ -93,6 +105,7 @@ function renderRecipeCatalog(){
  host.innerHTML=rows.length?rows.map(r=>`<article class="recipe-card"><div class="recipe-card-body"><h3>${esc(r.title)}</h3><span class="badge">${esc(r.servings)}</span><span class="badge category-badge">${esc(RECIPE_CATEGORIES[r.category]||r.category)}</span><details><summary>Ver receita completa</summary>${recipeDetailHTML(r)}</details></div><div class="recipe-footer"><div><span>kcal</span><strong>${esc(r.nutrition.calories)}</strong></div><div><span>Prot.</span><strong>${esc(r.nutrition.protein)}</strong></div><div><span>Carb.</span><strong>${esc(r.nutrition.carbs)}</strong></div><div><span>Gord.</span><strong>${esc(r.nutrition.fat)}</strong></div></div></article>`).join(''):'<div class="no-results">Nenhuma receita encontrada com os filtros atuais.</div>'
 }
 function init(){
+ syncThemeToggle();
  renderIngredientGroups();
  buildMealCards();
  renderCategoryFilter();
