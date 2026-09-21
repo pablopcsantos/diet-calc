@@ -184,6 +184,8 @@
 .integration-hint{color:var(--text-muted);font-size:.92rem}
 .ingredient-picker{border:1px solid var(--border);border-radius:12px;padding:18px;margin:22px 0;background:var(--surface-muted);box-shadow:0 4px 12px rgba(31,41,55,.05)}
 .ingredient-picker h3,.catalog-title{color:var(--primary);margin-top:0}
+.pantry-heading{color:var(--primary);margin:26px 0 6px;font-size:1.55rem}
+.pantry-controls{margin:14px 0 20px}
 .ingredient-picker-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .search-input{padding:11px;font-size:1rem;border:2px solid var(--border);border-radius:8px;outline:none;background:var(--input-bg);color:var(--text-main)}
 .ingredient-picker-row .search-input{flex:1;min-width:220px}
@@ -278,18 +280,21 @@
         </div>
 
 
+        <h2 class="pantry-heading">Minha despensa</h2>
         <p class="integration-hint"><strong>Ingredientes preferidos/disponíveis:</strong> marque os ingredientes que você realmente possui em casa. As categorias <strong>Principais</strong> começam sem seleção; as categorias <strong>Secundárias</strong> (Vegetais, Leguminosas, Molhos e condimentos, Ervas e temperos e Doces e confeitaria) já vêm selecionadas por padrão e podem ser desmarcadas. Todos os <strong id="ingredient-catalog-count">171</strong> ingredientes catalogados estão organizados por grupo.</p>
-        <div class="ingredient-picker">
-            <h3>Minha despensa</h3>
+        <div class="pantry-controls">
             <div class="ingredient-picker-row">
                 <input id="ingredient-search" class="search-input" placeholder="Filtrar ingredientes: frango, aveia, brócolis...">
                 <button class="secondary-btn" type="button" onclick="selectPantryBasics()">Marcar básicos de cozinha</button>
                 <button class="secondary-btn" type="button" onclick="clearIngredients()">Limpar seleção</button>
             </div>
+        </div>
+        <div id="quick-ingredient-groups"></div>
+        <div class="ingredient-picker">
+            <h3>Itens selecionados</h3>
             <p class="selection-status"><strong id="selected-count">0</strong> ingrediente(s) marcado(s). Grupos que contêm itens selecionados permanecem abertos.</p>
             <div id="selected-chips" class="chips"></div>
         </div>
-        <div id="quick-ingredient-groups"></div>
         <button class="btn-continue" onclick="document.querySelectorAll('.tab-btn')[1].click()">Gerar Plano com o Banco de Receitas ➔</button>
     </div>
 
