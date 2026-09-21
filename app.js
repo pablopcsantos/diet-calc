@@ -1,4 +1,5 @@
 const PANTRY_BASIC_IDS=['sal','pimenta','pimenta-reino','azeite','alho','cebola'];
+const SECONDARY_INGREDIENT_GROUPS=new Set(['Ervas e temperos','Molhos e condimentos','Doces e confeitaria']);
 const TAG_IMPLICATIONS={
 'arroz-integral':['arroz'],'batata-doce':['batata'],'farinha-aveia':['aveia'],'pao-integral':['pao'],
 'acucar-mascavo':['acucar'],'pimenta-reino':['pimenta'],'pasta-amendoim':['amendoim'],
@@ -8,11 +9,11 @@ const TAG_IMPLICATIONS={
 'feijao-branco':['feijao'],'feijao-preto':['feijao']
 };
 const MEAL_CONFIG=[
-{title:'Refeição 1: Café da Manhã',time:'07:00',ratio:.22,categories:['cafes','smoothies']},
-{title:'Refeição 2: Almoço',time:'12:00',ratio:.28,categories:['frango','carne','porco','peru','peixe','diversas','pizzas']},
-{title:'Refeição 3: Lanche / Pré-treino',time:'16:00',ratio:.15,categories:['sanduiches','barrinhas','smoothies','cafes','sobremesas']},
-{title:'Refeição 4: Jantar / Pós-treino',time:'20:00',ratio:.25,categories:['frango','carne','porco','peru','peixe','diversas','pizzas']},
-{title:'Refeição 5: Ceia',time:'23:00',ratio:.10,categories:['smoothies','sobremesas','barrinhas','cafes']}
+{mealType:'cafe',title:'Refeição 1: Café da Manhã',time:'07:00',ratio:.22},
+{mealType:'almoco',title:'Refeição 2: Almoço',time:'12:00',ratio:.28},
+{mealType:'lanche',title:'Refeição 3: Lanche / Pré-treino',time:'16:00',ratio:.15},
+{mealType:'jantar',title:'Refeição 4: Jantar / Pós-treino',time:'20:00',ratio:.25},
+{mealType:'ceia',title:'Refeição 5: Ceia',time:'23:00',ratio:.10}
 ];
 const catalogById=new Map(INGREDIENT_CATALOG.map(x=>[x.id,x]));
 const selectedIngredients=new Set();
@@ -45,15 +46,28 @@ function renderIngredientGroups(query=''){
  const count=document.getElementById('ingredient-catalog-count');
  if(count)count.textContent=INGREDIENT_CATALOG.length;
  host.innerHTML=[...grouped.entries()].map(([group,items])=>{
+   const secondary=SECONDARY_INGREDIENT_GROUPS.has(group);
+   const kind=secondary?'Secundária':'Principal';
    const shouldOpen=Boolean(q)||items.some(x=>selectedIngredients.has(x.id));
-   return `<details class="ingredient-group ingredient-catalog-group" ${shouldOpen?'open':''}>
-     <summary><span>${esc(group)}</span><small>${items.length} ingrediente(s)</small></summary>
+   return `<details class="ingredient-group ingredient-catalog-group ${secondary?'secondary-group':'primary-group'}" ${shouldOpen?'open':''}>
+     <summary><span class="group-title">${esc(group)} <span class="group-type-badge">${kind}</span></span><small>${items.length} ingrediente(s)</small></summary>
+     <div class="group-controls">
+       <button type="button" class="group-action-btn" data-group-action="all" data-group="${esc(group)}">Selecionar todos</button>
+       <button type="button" class="group-action-btn ghost" data-group-action="none" data-group="${esc(group)}">Não selecionar nenhum</button>
+     </div>
      <div class="checkbox-grid">${items.map(item=>`<label class="checkbox-label">
        <input type="checkbox" data-ingredient-id="${item.id}" ${selectedIngredients.has(item.id)?'checked':''} onchange="toggleIngredient('${item.id}',this.checked)">
        <span>${esc(item.label)} <small style="color:var(--text-muted)">(${item.count})</small></span>
      </label>`).join('')}</div>
    </details>`;
  }).join('')||'<div class="no-results">Nenhum ingrediente encontrado nessa busca.</div>';
+}
+function setIngredientGroup(group,selectAll){
+ INGREDIENT_CATALOG.filter(x=>x.group===group).forEach(x=>selectAll?selectedIngredients.add(x.id):selectedIngredients.delete(x.id));
+ syncIngredientUI();renderPlan();renderRecipeCatalog();
+}
+function initializeDefaultIngredients(){
+ INGREDIENT_CATALOG.filter(x=>SECONDARY_INGREDIENT_GROUPS.has(x.group)).forEach(x=>selectedIngredients.add(x.id));
 }
 function toggleIngredient(id,force){if(force===true)selectedIngredients.add(id);else if(force===false)selectedIngredients.delete(id);else selectedIngredients.has(id)?selectedIngredients.delete(id):selectedIngredients.add(id);syncIngredientUI();renderPlan();renderRecipeCatalog()}
 function syncIngredientUI(){
@@ -83,17 +97,19 @@ function recipeCanBeMade(recipe){
 function renderIngredientMenu(query=''){renderIngredientGroups(query)}
 function updateCalculations(){const name=document.getElementById('userName').value||'Usuário',gender=document.getElementById('gender').value,weight=parseFloat(document.getElementById('weight').value),height=parseFloat(document.getElementById('height').value),age=parseFloat(document.getElementById('age').value),activity=parseFloat(document.getElementById('activity').value);if(!weight||!height||!age)return;const tmb=gender==='M'?66+(13.7*weight)+(5*height)-(6.76*age):655+(9.6*weight)+(1.8*height)-(4.7*age);const tdee=tmb*activity;dailyTarget=tdee+250;document.getElementById('report-header').innerHTML=`<h3>Plano Nutricional de ${esc(name)}</h3><p>Taxa Metabólica Basal: <strong>${Math.round(tmb)} kcal/dia</strong></p><p>Manutenção estimada: <strong>${Math.round(tdee)} kcal/dia</strong></p><p>Meta para hipertrofia (+250 kcal): <strong>${Math.round(dailyTarget)} kcal/dia</strong></p>`;renderPlan()}
 function recipeScore(recipe,target){const tags=new Set(recipe.ingredientTags);const chosen=[...selectedIngredients];const matches=chosen.filter(x=>tags.has(x)).length;const preference=chosen.length?matches/chosen.length:0;const calories=num(recipe.nutrition.calories);const calorieDistance=target&&calories?Math.abs(calories-target)/target:1;return preference*100-calorieDistance*20+matches*4}
-function candidatesForMeal(config){const target=dailyTarget*config.ratio;return RECIPE_DATABASE.filter(r=>config.categories.includes(r.category)&&recipeCanBeMade(r)).map(r=>({r,score:recipeScore(r,target)})).sort((a,b)=>b.score-a.score||a.r.title.localeCompare(b.r.title,'pt-BR')).slice(0,30).map(x=>x.r)}
+function candidatesForMeal(config){const target=dailyTarget*config.ratio;return RECIPE_DATABASE.filter(r=>r.mealTypes.includes(config.mealType)&&recipeCanBeMade(r)).map(r=>({r,score:recipeScore(r,target)})).sort((a,b)=>b.score-a.score||a.r.title.localeCompare(b.r.title,'pt-BR')).slice(0,30).map(x=>x.r)}
 function buildMealCards(){document.getElementById('meals-container').innerHTML=MEAL_CONFIG.map((m,i)=>`<div class="meal-card"><div class="meal-header"><h2 class="meal-title">${m.title}</h2><span class="meal-time">⌚ ${m.time}</span></div><div class="target-note" id="target-m${i}"></div><div class="option-selector"><select id="select-m${i}" onchange="renderMealContent(${i})"></select></div><div class="meal-content" id="content-m${i}"></div></div>`).join('')}
 function renderPlan(){if(!document.getElementById('select-m0'))return;MEAL_CONFIG.forEach((m,i)=>{const list=candidatesForMeal(m),select=document.getElementById(`select-m${i}`),old=select.value;document.getElementById(`target-m${i}`).textContent=`Meta aproximada: ${Math.round(dailyTarget*m.ratio)} kcal · ${list.length} receita(s) compatível(is) com a despensa`;select.innerHTML=list.map(r=>`<option value="${r.id}">${esc(r.title)} — ${esc(r.nutrition.calories)} kcal</option>`).join('');if(list.some(r=>String(r.id)===old))select.value=old;renderMealContent(i)})}
 function renderMealContent(i){const id=Number(document.getElementById(`select-m${i}`).value),r=RECIPE_DATABASE.find(x=>x.id===id),host=document.getElementById(`content-m${i}`);if(!r){host.innerHTML='<div class="meal-prep">Nenhuma receita disponível.</div>';return}host.innerHTML=recipeDetailHTML(r)}
 function recipeDetailHTML(r){const ingredients=r.ingredientSections.map(s=>`<h4 class="subsection-title">${esc(s.title)}</h4><ul>${s.items.map(x=>`<li>${esc(x.text)}</li>`).join('')}</ul>`).join('');const prep=r.preparationSections.map(s=>`<h4 class="subsection-title">${esc(s.title)}</h4>${s.items.map(x=>`<p>${esc(x)}</p>`).join('')}`).join('');return `<p><span class="badge">${esc(r.servings)}</span><span class="badge category-badge">${esc(RECIPE_CATEGORIES[r.category]||r.category)}</span></p>${ingredients}<div class="nutrition-row"><div class="nutrition-item"><span>Calorias</span><strong>${esc(r.nutrition.calories)}</strong></div><div class="nutrition-item"><span>Proteínas</span><strong>${esc(r.nutrition.protein)}</strong></div><div class="nutrition-item"><span>Carbos</span><strong>${esc(r.nutrition.carbs)}</strong></div><div class="nutrition-item"><span>Gorduras</span><strong>${esc(r.nutrition.fat)}</strong></div></div><div class="meal-prep">${prep}</div>`}
 function renderCategoryFilter(){document.getElementById('category-filter').innerHTML='<option value="">Todas as categorias</option>'+Object.entries(RECIPE_CATEGORIES).map(([id,label])=>`<option value="${id}">${esc(label)}</option>`).join('')}
+function renderMealTypeFilter(){document.getElementById('meal-type-filter').innerHTML='<option value="">Todos os tipos de refeição</option>'+Object.entries(MEAL_TYPES).map(([id,label])=>`<option value="${id}">${esc(label)}</option>`).join('')}
 function renderRecipeCatalog(){
  const host=document.getElementById('recipe-grid');if(!host)return;
- const q=normalize(document.getElementById('recipe-search')?.value||''),cat=document.getElementById('category-filter')?.value||'',mode=document.getElementById('match-mode')?.value||'pantry',selected=[...selectedIngredients];
+ const q=normalize(document.getElementById('recipe-search')?.value||''),cat=document.getElementById('category-filter')?.value||'',mealType=document.getElementById('meal-type-filter')?.value||'',mode=document.getElementById('match-mode')?.value||'pantry',selected=[...selectedIngredients];
  const rows=RECIPE_DATABASE.filter(r=>{
    if(cat&&r.category!==cat)return false;
+   if(mealType&&!r.mealTypes.includes(mealType))return false;
    if(q&&!normalize(r.title).includes(q))return false;
    if(!selected.length)return true;
    const tags=new Set(r.ingredientTags);
@@ -101,16 +117,70 @@ function renderRecipeCatalog(){
    return mode==='all'?selected.every(x=>tags.has(x)):selected.some(x=>tags.has(x));
  });
  const modeLabel=mode==='pantry'?'preparáveis com a despensa':mode==='all'?'contendo todos os selecionados':'contendo qualquer selecionado';
- document.getElementById('catalog-summary').textContent=`${rows.length} de ${RECIPE_DATABASE.length} receitas encontradas${selected.length?` · ${selected.length} ingrediente(s) marcado(s) · ${modeLabel}`:''}.`;
- host.innerHTML=rows.length?rows.map(r=>`<article class="recipe-card"><div class="recipe-card-body"><h3>${esc(r.title)}</h3><span class="badge">${esc(r.servings)}</span><span class="badge category-badge">${esc(RECIPE_CATEGORIES[r.category]||r.category)}</span><details><summary>Ver receita completa</summary>${recipeDetailHTML(r)}</details></div><div class="recipe-footer"><div><span>kcal</span><strong>${esc(r.nutrition.calories)}</strong></div><div><span>Prot.</span><strong>${esc(r.nutrition.protein)}</strong></div><div><span>Carb.</span><strong>${esc(r.nutrition.carbs)}</strong></div><div><span>Gord.</span><strong>${esc(r.nutrition.fat)}</strong></div></div></article>`).join(''):'<div class="no-results">Nenhuma receita encontrada com os filtros atuais.</div>'
+ const mealLabel=mealType?` · ${MEAL_TYPES[mealType]}`:'';
+ document.getElementById('catalog-summary').textContent=`${rows.length} de ${RECIPE_DATABASE.length} receitas encontradas${mealLabel}${selected.length?` · ${selected.length} ingrediente(s) marcado(s) · ${modeLabel}`:''}.`;
+ host.innerHTML=rows.length?rows.map(r=>`<article class="recipe-card"><div class="recipe-card-body"><h3>${esc(r.title)}</h3><span class="badge">${esc(r.servings)}</span><span class="badge category-badge">${esc(RECIPE_CATEGORIES[r.category]||r.category)}</span><div class="meal-type-badges">${r.mealTypes.map(t=>`<span class="meal-type-badge">${esc(MEAL_TYPES[t]||t)}</span>`).join('')}</div><details><summary>Ver receita completa</summary>${recipeDetailHTML(r)}</details></div><div class="recipe-footer"><div><span>kcal</span><strong>${esc(r.nutrition.calories)}</strong></div><div><span>Prot.</span><strong>${esc(r.nutrition.protein)}</strong></div><div><span>Carb.</span><strong>${esc(r.nutrition.carbs)}</strong></div><div><span>Gord.</span><strong>${esc(r.nutrition.fat)}</strong></div></div></article>`).join(''):'<div class="no-results">Nenhuma receita encontrada com os filtros atuais.</div>'
 }
+function getProfileMetrics(){
+ const name=document.getElementById('userName').value||'Usuário';
+ const gender=document.getElementById('gender').value;
+ const weight=parseFloat(document.getElementById('weight').value);
+ const height=parseFloat(document.getElementById('height').value);
+ const age=parseFloat(document.getElementById('age').value);
+ const activity=parseFloat(document.getElementById('activity').value);
+ if(!weight||!height||!age)return null;
+ const tmb=gender==='M'?66+(13.7*weight)+(5*height)-(6.76*age):655+(9.6*weight)+(1.8*height)-(4.7*age);
+ const tdee=tmb*activity;
+ return {name,gender,weight,height,age,activity,tmb,tdee,target:tdee+250};
+}
+function printRecipeIngredients(r){
+ return r.ingredientSections.map(s=>`<div class="print-subsection"><h4>${esc(s.title)}</h4><ul>${s.items.map(x=>`<li>${esc(x.text)}</li>`).join('')}</ul></div>`).join('');
+}
+function printRecipePreparation(r){
+ return r.preparationSections.map(s=>`<div class="print-subsection"><h4>${esc(s.title)}</h4><ol>${s.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`).join('');
+}
+function buildPrintReport(){
+ const host=document.getElementById('print-report');
+ const p=getProfileMetrics();
+ if(!host||!p)return;
+ const selectedMeals=MEAL_CONFIG.map((m,i)=>{
+   const select=document.getElementById(`select-m${i}`);
+   const r=select?RECIPE_DATABASE.find(x=>String(x.id)===select.value):null;
+   return {config:m,recipe:r};
+ });
+ const overview=selectedMeals.map(({config,recipe})=>`<tr><td>${esc(MEAL_TYPES[config.mealType])}</td><td>${esc(config.time)}</td><td>${recipe?esc(recipe.title):'Sem receita selecionada'}</td><td>${recipe?esc(recipe.nutrition.calories):'—'}</td><td>${recipe?esc(recipe.nutrition.protein):'—'}</td></tr>`).join('');
+ const details=selectedMeals.map(({config,recipe})=>{
+   if(!recipe)return `<section class="print-meal"><div class="print-meal-heading"><div><span class="print-kicker">${esc(MEAL_TYPES[config.mealType])}</span><h2>Sem receita selecionada</h2></div><span class="print-time">${esc(config.time)}</span></div></section>`;
+   return `<section class="print-meal">
+     <div class="print-meal-heading"><div><span class="print-kicker">${esc(MEAL_TYPES[config.mealType])}</span><h2>${esc(recipe.title)}</h2><p>${esc(recipe.servings)} · ${esc(RECIPE_CATEGORIES[recipe.category]||recipe.category)}</p></div><span class="print-time">${esc(config.time)}</span></div>
+     <table class="print-macros"><tr><th>Calorias</th><th>Proteínas</th><th>Carboidratos</th><th>Gorduras</th></tr><tr><td>${esc(recipe.nutrition.calories)}</td><td>${esc(recipe.nutrition.protein)}</td><td>${esc(recipe.nutrition.carbs)}</td><td>${esc(recipe.nutrition.fat)}</td></tr></table>
+     <div class="print-recipe-section"><h3>Ingredientes</h3>${printRecipeIngredients(recipe)}</div>
+     <div class="print-recipe-section"><h3>Modo de preparo</h3>${printRecipePreparation(recipe)}</div>
+   </section>`;
+ }).join('');
+ host.innerHTML=`<div class="print-header"><div><h1>DietCalc</h1><p>Plano alimentar de ${esc(p.name)}</p></div><div class="print-date">Gerado em ${new Date().toLocaleDateString('pt-BR')}</div></div>
+ <table class="print-profile"><tr><th>Idade</th><th>Peso</th><th>Altura</th><th>TMB</th><th>Manutenção</th><th>Meta diária</th></tr><tr><td>${esc(p.age)} anos</td><td>${esc(p.weight)} kg</td><td>${esc(p.height)} cm</td><td>${Math.round(p.tmb)} kcal</td><td>${Math.round(p.tdee)} kcal</td><td>${Math.round(p.target)} kcal</td></tr></table>
+ <section class="print-overview"><h2>Resumo do plano</h2><table><thead><tr><th>Refeição</th><th>Horário</th><th>Receita</th><th>kcal</th><th>Proteína</th></tr></thead><tbody>${overview}</tbody></table></section>
+ <div class="print-details">${details}</div>
+ <p class="print-disclaimer">As quantidades e informações nutricionais são as cadastradas nas receitas originais. Este relatório é uma ferramenta de organização e não substitui orientação individualizada de nutricionista ou profissional de saúde.</p>`;
+}
+function exportPDF(){buildPrintReport();requestAnimationFrame(()=>window.print())}
 function init(){
  syncThemeToggle();
+ initializeDefaultIngredients();
  renderIngredientGroups();
  buildMealCards();
  renderCategoryFilter();
+ renderMealTypeFilter();
  const search=document.getElementById('ingredient-search');
  search.addEventListener('input',()=>renderIngredientGroups(search.value));
+ document.getElementById('quick-ingredient-groups').addEventListener('click',e=>{
+   const button=e.target.closest('[data-group-action]');
+   if(!button)return;
+   e.preventDefault();
+   e.stopPropagation();
+   setIngredientGroup(button.dataset.group,button.dataset.groupAction==='all');
+ });
  updateCalculations();
  renderRecipeCatalog();
 }
