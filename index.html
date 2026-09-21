@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DietCalc - Plano Alimentar</title>
     <style>
-        /* Paleta de Cores e Variáveis */
         :root {
-            --primary: #4F46E5; /* Indigo */
+            --primary: #4F46E5; 
             --primary-hover: #4338CA;
-            --secondary: #10B981; /* Emerald */
+            --secondary: #10B981; 
             --bg-color: #F3F4F6;
             --card-bg: #FFFFFF;
             --text-main: #1F2937;
@@ -35,211 +34,95 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 10px; }
+        header p { color: var(--text-muted); font-size: 1.1rem; }
 
-        header h1 {
-            color: var(--primary);
-            font-size: 2.2rem;
-            margin-bottom: 10px;
+        .tabs-nav {
+            display: flex; gap: 10px; margin-bottom: 30px;
+            border-bottom: 2px solid var(--border); padding-bottom: 10px;
         }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
+        .tab-btn {
+            background: #E5E7EB; color: var(--text-muted); border: none;
+            padding: 12px 20px; border-radius: 8px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; flex: 1; font-size: 1.1rem;
         }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Seção da Calculadora */
-        .calculator {
+        /* Perfil do Usuário e Calculadora */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
             background: #EEF2FF;
             padding: 25px;
             border-radius: 12px;
             border: 1px solid #C7D2FE;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 40px;
-        }
-
-        .calculator label {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #3730A3;
-        }
-
-        input[type="number"] {
-            padding: 12px;
-            font-size: 1.1rem;
-            border: 2px solid #A5B4FC;
-            border-radius: 8px;
-            width: 120px;
-            text-align: center;
-            font-weight: bold;
-            color: var(--primary);
-            outline: none;
-        }
-
-        input[type="number"]:focus {
-            border-color: var(--primary);
-        }
-
-        button {
-            padding: 12px 24px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-        }
-
-        /* Cartões de Refeição */
-        .meal-card {
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            background: #FAFAFA;
-            transition: box-shadow 0.3s ease;
-        }
-
-        .meal-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .meal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .meal-title {
-            margin: 0;
-            font-size: 1.4rem;
-            color: var(--text-main);
-        }
-
-        .meal-time {
-            background: var(--secondary);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .option-selector {
             margin-bottom: 20px;
         }
 
-        .option-selector select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            background-color: white;
-            color: var(--text-main);
-            font-weight: 500;
-            outline: none;
-            cursor: pointer;
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-weight: 600; font-size: 0.95rem; color: #3730A3; }
+        .input-group input, .input-group select {
+            padding: 10px; font-size: 1rem; border: 2px solid #A5B4FC;
+            border-radius: 8px; outline: none; background: white;
         }
-
-        .option-selector select:focus {
-            border-color: var(--primary);
+        .input-group input:focus, .input-group select:focus { border-color: var(--primary); }
+        
+        .calc-results {
+            background: var(--primary); color: white; padding: 20px;
+            border-radius: 12px; margin-bottom: 30px; text-align: center;
         }
+        .calc-results h3 { margin: 0 0 10px 0; font-size: 1.5rem; }
+        .calc-results p { margin: 5px 0; font-size: 1.1rem; opacity: 0.9; }
+        .calc-results strong { color: #A7F3D0; font-size: 1.2rem; }
 
-        .meal-content h4 {
-            margin-top: 0;
-            color: var(--primary);
+        /* Ingredientes e Cards */
+        .ingredient-group {
+            margin-bottom: 25px; padding: 20px; background: #FAFAFA;
+            border-radius: 12px; border: 1px solid var(--border);
         }
+        .ingredient-group h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
+        .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; }
+        .checkbox-label input { width: 18px; height: 18px; accent-color: var(--primary); }
 
-        .meal-content ul {
-            padding-left: 20px;
+        .meal-card { border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 25px; background: #FAFAFA; }
+        .meal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .meal-title { margin: 0; font-size: 1.4rem; color: var(--text-main); }
+        .meal-time { background: var(--secondary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; }
+        .option-selector select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; font-weight: 500; margin-bottom: 20px; background-color: white; }
+        .meal-content h4 { margin-top: 0; color: var(--primary); }
+        .meal-content ul { padding-left: 20px; }
+        .meal-prep { background: #FFFBEB; padding: 15px; border-radius: 8px; border-left: 4px solid #F59E0B; margin-top: 15px; font-style: italic; }
+
+        .explanations { margin-top: 40px; padding: 25px; background: #F0FDF4; border-radius: 12px; border: 1px solid #BBF7D0; }
+        .explanations h2 { color: #166534; margin-top: 0; }
+        .explanations h3 { color: #15803D; margin-top: 20px; }
+
+        .export-btn, .btn-continue {
+            background-color: var(--secondary); color: white; padding: 15px 30px; font-size: 1.2rem;
+            border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 20px; transition: 0.3s;
         }
+        .export-btn:hover, .btn-continue:hover { background-color: #059669; }
+        .btn-continue { background-color: var(--primary); }
+        .btn-continue:hover { background-color: var(--primary-hover); }
 
-        .meal-content li {
-            margin-bottom: 8px;
-        }
-
-        .meal-prep {
-            background: #FFFBEB;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #F59E0B;
-            margin-top: 15px;
-            font-style: italic;
-        }
-
-        /* Explicações e Catabolismo */
-        .explanations {
-            margin-top: 50px;
-            padding: 30px;
-            background: #F0FDF4;
-            border-radius: 12px;
-            border: 1px solid #BBF7D0;
-        }
-
-        .explanations h2 {
-            color: #166534;
-            margin-top: 0;
-        }
-
-        .explanations h3 {
-            color: #15803D;
-            margin-top: 25px;
-        }
-
-        .export-btn {
-            width: 100%;
-            background-color: var(--secondary);
-            margin-top: 30px;
-            padding: 16px;
-            font-size: 1.2rem;
-        }
-
-        .export-btn:hover {
-            background-color: #059669;
-        }
-
-        /* Regras de Impressão (PDF Offline) */
+        /* Regras de Impressão */
         @media print {
             body { background: white; padding: 0; }
             .container { box-shadow: none; padding: 0; max-width: 100%; }
-            .calculator, .export-btn { display: none; }
-            .meal-card { page-break-inside: avoid; border: 1px solid #ccc; background: white; }
-            .option-selector select { 
-                border: none; 
-                appearance: none; 
-                -webkit-appearance: none; 
-                background: transparent; 
-                font-weight: bold;
-                font-size: 1.1rem;
-                padding: 0;
-                color: var(--primary);
-            }
-            .explanations { border: 1px solid #ccc; background: white; page-break-inside: avoid; }
-        }
-
-        @media (max-width: 600px) {
-            .meal-header { flex-direction: column; align-items: flex-start; }
-            .container { padding: 20px; }
+            .tabs-nav, .export-btn, #tab-ingredientes, .btn-continue { display: none !important; }
+            #tab-plano { display: block !important; }
+            .profile-grid { display: none; }
+            .calc-results { background: white; color: black; border: 2px solid black; break-after: avoid; }
+            .calc-results strong { color: black; }
+            .meal-card { page-break-inside: avoid; border: 1px solid #ccc; }
+            .option-selector select { border: none; appearance: none; background: transparent; font-weight: bold; font-size: 1.1rem; padding: 0; color: var(--primary); }
+            .explanations { page-break-inside: avoid; border: 1px solid #ccc; }
         }
     </style>
 </head>
@@ -248,251 +131,251 @@
 <div class="container">
     <header>
         <h1>DietCalc - Musculação</h1>
-        <p>Gere seu plano alimentar com porções exatas e opções variadas.</p>
+        <p>Gere seu plano alimentar adaptado à sua rotina, biotipo e orçamento.</p>
     </header>
 
-    <div class="calculator">
-        <label for="weight">Seu Peso Atual (kg):</label>
-        <input type="number" id="weight" value="70" min="40" max="150" oninput="updateAllMeals()">
-        <button onclick="window.print()" class="export-btn-small" style="background-color: var(--secondary); margin-left: 10px;">Salvar PDF</button>
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab('tab-ingredientes', this)">1. Perfil e Despensa</button>
+        <button class="tab-btn" onclick="switchTab('tab-plano', this)">2. Seu Plano Alimentar</button>
     </div>
 
-    <div id="diet-plan">
-        <!-- Refeição 1 -->
-        <div class="meal-card" id="meal-1">
-            <div class="meal-header">
-                <h2 class="meal-title">Refeição 1: Café da Manhã</h2>
-                <span class="meal-time">⌚ Sugestão: 07:00</span>
-            </div>
-            <div class="option-selector">
-                <select id="select-m1" onchange="updateAllMeals()">
-                    <option value="0">Opção 1: Panqueca Proteica de Aveia</option>
-                    <option value="1">Opção 2: Pão Integral com Ovos Mexidos</option>
-                    <option value="2">Opção 3: Iogurte Completo com Frutas</option>
-                </select>
-            </div>
-            <div class="meal-content" id="content-m1"></div>
-        </div>
-
-        <!-- Refeição 2 -->
-        <div class="meal-card" id="meal-2">
-            <div class="meal-header">
-                <h2 class="meal-title">Refeição 2: Almoço</h2>
-                <span class="meal-time">⌚ Sugestão: 12:00</span>
-            </div>
-            <div class="option-selector">
-                <select id="select-m2" onchange="updateAllMeals()">
-                    <option value="0">Opção 1: Clássico Frango com Batata Doce</option>
-                    <option value="1">Opção 2: Patinho Moído com Arroz Branco</option>
-                    <option value="2">Opção 3: Filé de Tilápia com Mandioca</option>
-                </select>
-            </div>
-            <div class="meal-content" id="content-m2"></div>
-        </div>
-
-        <!-- Refeição 3 -->
-        <div class="meal-card" id="meal-3">
-            <div class="meal-header">
-                <h2 class="meal-title">Refeição 3: Lanche / Pré-Treino</h2>
-                <span class="meal-time">⌚ Sugestão: 16:00</span>
-            </div>
-            <div class="option-selector">
-                <select id="select-m3" onchange="updateAllMeals()">
-                    <option value="0">Opção 1: Shake Rápido de Whey e Banana</option>
-                    <option value="2">Opção 2: Mingau de Aveia Proteico</option>
-                    <option value="1">Opção 3: Crepioca Simples</option>
-                </select>
-            </div>
-            <div class="meal-content" id="content-m3"></div>
-        </div>
-
-        <!-- Refeição 4 -->
-        <div class="meal-card" id="meal-4">
-            <div class="meal-header">
-                <h2 class="meal-title">Refeição 4: Jantar / Pós-Treino</h2>
-                <span class="meal-time">⌚ Sugestão: 20:00</span>
-            </div>
-            <div class="option-selector">
-                <select id="select-m4" onchange="updateAllMeals()">
-                    <option value="0">Opção 1: Frango, Arroz e Feijão</option>
-                    <option value="1">Opção 2: Macarrão com Carne Moída</option>
-                    <option value="2">Opção 3: Omelete Turbinado de Frango</option>
-                </select>
-            </div>
-            <div class="meal-content" id="content-m4"></div>
-        </div>
-
-        <!-- Refeição 5 -->
-        <div class="meal-card" id="meal-5">
-            <div class="meal-header">
-                <h2 class="meal-title">Refeição 5: Ceia</h2>
-                <span class="meal-time">⌚ Sugestão: 23:00 (Antes de dormir)</span>
-            </div>
-            <div class="option-selector">
-                <select id="select-m5" onchange="updateAllMeals()">
-                    <option value="0">Opção 1: Iogurte com Pasta de Amendoim</option>
-                    <option value="1">Opção 2: Abacate com Whey Protein</option>
-                    <option value="2">Opção 3: Ovos Cozidos com Azeite</option>
-                </select>
-            </div>
-            <div class="meal-content" id="content-m5"></div>
-        </div>
-    </div>
-
-    <div class="explanations">
-        <h2>Entendendo seu Plano Alimentar</h2>
+    <!-- ABA 1: Perfil e Filtro de Ingredientes -->
+    <div id="tab-ingredientes" class="tab-content active">
         
-        <h3>O que é o Catabolismo e por que os horários importam?</h3>
-        <p>A musculação é uma atividade <strong>catabólica</strong>: o treino em si "machuca" e quebra as fibras musculares. O ganho de massa (anabolismo) só ocorre durante o descanso e depende diretamente dos nutrientes disponíveis no seu corpo.</p>
-        <p>Se você ficar muitas horas sem comer, seu corpo entra em "alerta" e começa a usar a própria massa muscular como fonte de energia, o que gera a perda de músculos (catabolismo). Por isso, sugerimos intervalos regulares de <strong>3 a 4 horas entre as refeições</strong>. Esse espaçamento garante que haja sempre aminoácidos (proteínas) e glicose (carboidratos) na corrente sanguínea para reconstruir as fibras musculares que você treinou.</p>
+        <div class="profile-grid">
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label for="userName">Seu Nome Completo:</label>
+                <input type="text" id="userName" placeholder="Ex: João da Silva" oninput="updateCalculations()">
+            </div>
+            <div class="input-group">
+                <label for="gender">Sexo Biológico:</label>
+                <select id="gender" onchange="updateCalculations()">
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="age">Idade (anos):</label>
+                <input type="number" id="age" value="25" min="15" max="100" oninput="updateCalculations()">
+            </div>
+            <div class="input-group">
+                <label for="weight">Peso (kg):</label>
+                <input type="number" id="weight" value="70" min="40" max="150" oninput="updateCalculations()">
+            </div>
+            <div class="input-group">
+                <label for="height">Altura (cm):</label>
+                <input type="number" id="height" value="175" min="140" max="220" oninput="updateCalculations()">
+            </div>
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label for="activity">Nível de Atividade Física:</label>
+                <select id="activity" onchange="updateCalculations()">
+                    <option value="1.2">Sedentário (Pouco ou nenhum exercício + trabalho de mesa)</option>
+                    <option value="1.35">Pouco Ativo (Exercícios leves 1-3 dias/semana)</option>
+                    <option value="1.55" selected>Moderadamente Ativo (Musculação 3-6 dias/semana)</option>
+                    <option value="1.75">Muito Ativo (Esforço bruto / Atleta 6-7 dias/semana)</option>
+                </select>
+            </div>
+        </div>
 
-        <h3>O papel das 3 macronutrientes neste plano:</h3>
-        <ul>
-            <li><strong>Proteínas (Ovos, Frango, Patinho, Whey, Peixe):</strong> São os "tijolos" da construção muscular. Ingeri-las em todas as refeições é inegociável.</li>
-            <li><strong>Carboidratos (Arroz, Batata, Aveia, Frutas):</strong> São a "energia dos pedreiros". Sem carboidrato suficiente, o corpo queima proteína para gerar energia e seu treino perde rendimento.</li>
-            <li><strong>Gorduras (Azeite, Pasta de Amendoim, Abacate):</strong> Essenciais para a produção de hormônios como a testosterona. Na ceia, ajudam a atrasar a digestão, mantendo seu corpo nutrido durante o longo jejum do sono.</li>
-        </ul>
+        <div style="background: #EFF6FF; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #3B82F6;">
+            <strong>Filtro de Despensa:</strong> Marque os alimentos que você gosta e cabem no orçamento. O sistema só gerará pratos com estes ingredientes.
+        </div>
+
+        <div class="ingredient-group">
+            <h3>Proteínas</h3>
+            <div class="checkbox-grid" id="grid-proteinas"></div>
+        </div>
+        <div class="ingredient-group">
+            <h3>Carboidratos</h3>
+            <div class="checkbox-grid" id="grid-carbos"></div>
+        </div>
+        <div class="ingredient-group">
+            <h3>Gorduras Boas</h3>
+            <div class="checkbox-grid" id="grid-gorduras"></div>
+        </div>
+
+        <button class="btn-continue" onclick="document.querySelectorAll('.tab-btn')[1].click()">Gerar Relatório e Plano Alimentar ➔</button>
     </div>
 
-    <button class="export-btn" onclick="window.print()">Exportar Plano Completo (PDF)</button>
+    <!-- ABA 2: Plano Alimentar -->
+    <div id="tab-plano" class="tab-content">
+        
+        <div class="calc-results" id="report-header">
+            <!-- Preenchido via JS com os dados de Harris-Benedict -->
+        </div>
+
+        <div id="meals-container"></div>
+
+        <div class="explanations">
+            <h2>Princípios da Hipertrofia</h2>
+            
+            <h3>O ajuste de calorias é o segredo</h3>
+            <p>Para gerar hipertrofia, você precisa de energia em excesso. O valor calculado no topo do relatório é o seu Gasto Diário. Use-o para guiar sua dieta. Monitore semanalmente: se o peso estagnar, <strong>adicione 250 kcal</strong>; se notar acúmulo excessivo de gordura, <strong>retire 250 kcal</strong>.</p>
+            
+            <h3>Cuidado ao "comer igual a um monstro"</h3>
+            <p>Comer sem critério gera dois cenários: ou você acha que come muito mas não atinge as calorias necessárias (típico de ectomorfos), ou você excede absurdamente e o corpo armazena o que não usou para o músculo em forma de gordura pura.</p>
+
+            <h3>E os hipercalóricos?</h3>
+            <p>Eles funcionam para bater as calorias, mas cuidado com produtos baratos. A maioria é uma bomba de açúcares simples com proteína de soja e gelatina, contendo apenas traços de Whey para fazer marketing no rótulo. Prefira comida de verdade ou suplementos de marcas confiáveis.</p>
+        </div>
+
+        <button class="export-btn" onclick="window.print()">Exportar Relatório em PDF</button>
+    </div>
 </div>
 
 <script>
-    // Banco de dados das receitas com fórmulas multiplicadoras baseadas no peso(w)
-    const dietData = {
-        1: [ // Refeição 1
-            { 
-                ingredients: (w) => `<li><strong>${Math.max(2, Math.round(w * 0.04))}</strong> ovos inteiros</li>
-                                     <li><strong>${Math.round(w * 0.71)}g</strong> de aveia em flocos</li>
-                                     <li><strong>1</strong> banana</li>`,
-                prep: "Bata tudo no garfo ou liquidificador e asse em uma frigideira antiaderente."
-            },
-            { 
-                ingredients: (w) => `<li><strong>2</strong> fatias de pão de forma integral</li>
-                                     <li><strong>${Math.max(2, Math.round(w * 0.05))}</strong> ovos inteiros</li>
-                                     <li><strong>1</strong> fatia de queijo mussarela</li>`,
-                prep: "Faça os ovos mexidos com o queijo e coloque no pão tostado."
-            },
-            { 
-                ingredients: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> de iogurte natural desnatado</li>
-                                     <li><strong>${Math.round(w * 0.4)}g</strong> de Whey Protein</li>
-                                     <li><strong>1</strong> porção de frutas vermelhas ou morango</li>
-                                     <li><strong>15g</strong> de chia ou linhaça</li>`,
-                prep: "Misture o whey no iogurte até ficar homogêneo e adicione as frutas por cima."
-            }
+    const allIngredients = {
+        proteinas: [
+            { id: 'ovo', label: 'Ovos Inteiros' }, { id: 'whey', label: 'Whey Protein' },
+            { id: 'frango', label: 'Peito de Frango' }, { id: 'patinho', label: 'Carne Vermelha' },
+            { id: 'tilapia', label: 'Filé de Tilápia' }, { id: 'iogurte', label: 'Iogurte Natural' }
         ],
-        2: [ // Refeição 2
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> de peito de frango (pesado grelhado)</li>
-                                     <li><strong>${Math.round(w * 3.0)}g</strong> de batata doce cozida</li>
-                                     <li>Salada de folhas verdes à vontade</li>
-                                     <li><strong>1 colher de sopa</strong> de azeite extra virgem</li>`,
-                prep: "Grelhe o frango com temperos naturais. Tempere a salada com o azeite e limão."
-            },
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> de carne moída (patinho)</li>
-                                     <li><strong>${Math.round(w * 2.5)}g</strong> de arroz branco cozido</li>
-                                     <li><strong>100g</strong> de legumes no vapor (brócolis, cenoura)</li>`,
-                prep: "Refogue a carne com bastante alho e cebola. Misture aos legumes."
-            },
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 2.6)}g</strong> de filé de tilápia grelhado/assado</li>
-                                     <li><strong>${Math.round(w * 2.6)}g</strong> de mandioca (macaxeira) cozida</li>
-                                     <li>Salada de tomates e pepino</li>`,
-                prep: "Tempere o peixe com limão e asse no forno ou AirFryer. Sirva com a mandioca."
-            }
+        carbos: [
+            { id: 'aveia', label: 'Aveia' }, { id: 'banana', label: 'Banana' },
+            { id: 'pao', label: 'Pão Integral' }, { id: 'batata', label: 'Batata Doce' },
+            { id: 'arroz', label: 'Arroz Branco' }, { id: 'mandioca', label: 'Mandioca' },
+            { id: 'tapioca', label: 'Tapioca' }, { id: 'macarrao', label: 'Macarrão' }
         ],
-        3: [ // Refeição 3
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 0.4)}g</strong> de Whey Protein Concentrado</li>
-                                     <li><strong>${Math.round(w * 4.0)}ml</strong> de leite desnatado</li>
-                                     <li><strong>1</strong> banana média</li>`,
-                prep: "Bata no liquidificador. Digestão super rápida, ideal para beber 1h antes de treinar."
-            },
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 0.6)}g</strong> de tapioca (goma)</li>
-                                     <li><strong>${Math.max(2, Math.round(w * 0.03))}</strong> ovos inteiros</li>
-                                     <li>Sal a gosto</li>`,
-                prep: "Bata a goma com os ovos e jogue na frigideira. Recheie com requeijão light se desejar."
-            },
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 0.6)}g</strong> de farelo de aveia</li>
-                                     <li><strong>${Math.round(w * 0.4)}g</strong> de Whey Protein</li>
-                                     <li><strong>150ml</strong> de água ou leite desnatado</li>`,
-                prep: "Leve a aveia com a água/leite ao microondas por 1 min. Depois de morno, misture o whey."
-            }
-        ],
-        4: [ // Refeição 4
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> de peito de frango</li>
-                                     <li><strong>${Math.round(w * 1.5)}g</strong> de arroz branco cozido</li>
-                                     <li><strong>${Math.round(w * 1.5)}g</strong> de feijão cozido (apenas os grãos)</li>`,
-                prep: "Refeição pós-treino clássica. O arroz branco ajuda a repor o glicogênio rapidamente."
-            },
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> de macarrão cozido</li>
-                                     <li><strong>${Math.round(w * 2.1)}g</strong> de patinho moído</li>
-                                     <li>Molho de tomate natural (sem açúcar)</li>`,
-                prep: "Cozinhe o macarrão. Faça o patinho moído e adicione o molho natural de tomate por cima."
-            },
-            {
-                ingredients: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> ovos inteiros</li>
-                                     <li><strong>${Math.round(w * 1.4)}g</strong> de frango desfiado</li>
-                                     <li>Tomate, cebola e espinafre picados</li>`,
-                prep: "Misture tudo e faça um omelete gigante. Excelente para saciedade no período da noite."
-            }
-        ],
-        5: [ // Refeição 5
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> de iogurte natural integral</li>
-                                     <li><strong>${Math.round(w * 0.25)}g</strong> de pasta de amendoim</li>
-                                     <li>Adoçante zero calorias (opcional)</li>`,
-                prep: "Misture bem. A gordura da pasta atrasa a absorção, mantendo você nutrido enquanto dorme."
-            },
-            {
-                ingredients: (w) => `<li><strong>${Math.round(w * 1.5)}g</strong> de abacate picado</li>
-                                     <li><strong>${Math.round(w * 0.3)}g</strong> de Whey Protein</li>
-                                     <li>Um pouco de água para dar o ponto</li>`,
-                prep: "Amasse o abacate e misture o pó de proteína até virar um creme doce."
-            },
-            {
-                ingredients: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> ovos cozidos</li>
-                                     <li><strong>1 colher de sopa</strong> de azeite de oliva</li>
-                                     <li>Orégano e sal</li>`,
-                prep: "Cozinhe os ovos, corte ao meio, regue com o azeite e orégano. Simples e muito eficaz."
-            }
+        gorduras: [
+            { id: 'amendoim', label: 'Pasta de Amendoim' }, { id: 'abacate', label: 'Abacate' },
+            { id: 'azeite', label: 'Azeite Extra Virgem' }
         ]
     };
 
-    function updateAllMeals() {
-        const weightInput = document.getElementById('weight').value;
-        const weight = parseFloat(weightInput);
+    const dietData = {
+        1: { title: "Refeição 1: Café da Manhã", time: "07:00", recipes: [
+            { title: "Panqueca de Aveia", tags: ['ovo', 'aveia', 'banana'], ing: (w) => `<li><strong>${Math.max(2, Math.round(w * 0.04))}</strong> ovos</li><li><strong>${Math.round(w * 0.71)}g</strong> aveia</li><li><strong>1</strong> banana</li>`, prep: "Bata tudo e asse em frigideira." },
+            { title: "Iogurte Proteico", tags: ['iogurte', 'whey'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> iogurte</li><li><strong>${Math.round(w * 0.4)}g</strong> Whey</li>`, prep: "Misture o whey no iogurte." }
+        ]},
+        2: { title: "Refeição 2: Almoço", time: "12:00", recipes: [
+            { title: "Frango com Batata Doce", tags: ['frango', 'batata', 'azeite'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> frango</li><li><strong>${Math.round(w * 3.0)}g</strong> batata doce</li><li>Salada e 1 col. azeite</li>`, prep: "Grelhe o frango. Tempere salada com azeite." },
+            { title: "Patinho com Arroz", tags: ['patinho', 'arroz'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> patinho</li><li><strong>${Math.round(w * 2.5)}g</strong> arroz</li>`, prep: "Refogue a carne e sirva com arroz." }
+        ]},
+        3: { title: "Refeição 3: Pré-Treino", time: "16:00", recipes: [
+            { title: "Shake de Whey", tags: ['whey', 'banana'], ing: (w) => `<li><strong>${Math.round(w * 0.4)}g</strong> Whey</li><li><strong>300ml</strong> água/leite</li><li><strong>1</strong> banana</li>`, prep: "Bata no liquidificador." },
+            { title: "Crepioca", tags: ['tapioca', 'ovo'], ing: (w) => `<li><strong>${Math.round(w * 0.6)}g</strong> tapioca</li><li><strong>${Math.max(2, Math.round(w * 0.03))}</strong> ovos</li>`, prep: "Bata a goma com ovos e faça na frigideira." }
+        ]},
+        4: { title: "Refeição 4: Pós-Treino", time: "20:00", recipes: [
+            { title: "Frango e Arroz", tags: ['frango', 'arroz'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> frango</li><li><strong>${Math.round(w * 1.5)}g</strong> arroz branco</li>`, prep: "Refeição clássica para repor glicogênio." },
+            { title: "Macarrão com Carne", tags: ['macarrao', 'patinho'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> macarrão</li><li><strong>${Math.round(w * 2.1)}g</strong> patinho</li>`, prep: "Macarrão à bolonhesa magro." }
+        ]},
+        5: { title: "Refeição 5: Ceia", time: "23:00", recipes: [
+            { title: "Iogurte com Amendoim", tags: ['iogurte', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> iogurte</li><li><strong>${Math.round(w * 0.25)}g</strong> pasta de amendoim</li>`, prep: "Misture bem. A gordura atrasa a digestão." },
+            { title: "Ovos com Azeite", tags: ['ovo', 'azeite'], ing: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> ovos cozidos</li><li><strong>1 col. sopa</strong> azeite</li>`, prep: "Cozinhe os ovos e regue com azeite." }
+        ]}
+    };
 
-        if (isNaN(weight) || weight <= 0) {
-            return; // Previne cálculos com números inválidos
+    function init() {
+        renderCheckboxes();
+        buildMealCardsHTML();
+        updateCalculations();
+    }
+
+    function renderCheckboxes() {
+        ['proteinas', 'carbos', 'gorduras'].forEach(category => {
+            const grid = document.getElementById(`grid-${category}`);
+            allIngredients[category].forEach(item => {
+                grid.innerHTML += `<label class="checkbox-label"><input type="checkbox" class="ing-checkbox" value="${item.id}" checked onchange="applyFiltersAndRender()"> ${item.label}</label>`;
+            });
+        });
+    }
+
+    function switchTab(tabId, btnElement) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btnElement.classList.add('active');
+        if (tabId === 'tab-plano') applyFiltersAndRender();
+    }
+
+    function updateCalculations() {
+        const name = document.getElementById('userName').value || "Usuário";
+        const gender = document.getElementById('gender').value;
+        const weight = parseFloat(document.getElementById('weight').value);
+        const height = parseFloat(document.getElementById('height').value);
+        const age = parseFloat(document.getElementById('age').value);
+        const activity = parseFloat(document.getElementById('activity').value);
+
+        if(!weight || !height || !age) return;
+
+        // Equação de Harris-Benedict
+        let tmb = 0;
+        if (gender === 'M') {
+            tmb = 66 + (13.7 * weight) + (5 * height) - (6.76 * age);
+        } else {
+            tmb = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
         }
 
-        // Atualiza as 5 refeições dinamicamente
+        const tdee = tmb * activity;
+        const hipertrofia = tdee + 250;
+
+        document.getElementById('report-header').innerHTML = `
+            <h3 id="report-name">Plano Nutricional de ${name}</h3>
+            <p>Taxa Metabólica Basal (TMB): <strong>${Math.round(tmb)} kcal/dia</strong></p>
+            <p>Gasto Diário (Manutenção): <strong>${Math.round(tdee)} kcal/dia</strong></p>
+            <p>Meta para Hipertrofia (+250kcal): <strong>${Math.round(hipertrofia)} kcal/dia</strong></p>
+        `;
+
+        applyFiltersAndRender();
+    }
+
+    function buildMealCardsHTML() {
+        const container = document.getElementById('meals-container');
+        let html = '';
         for (let i = 1; i <= 5; i++) {
-            const selectValue = document.getElementById(`select-m${i}`).value;
-            const contentDiv = document.getElementById(`content-m${i}`);
-            
-            const recipe = dietData[i][selectValue];
-            
-            contentDiv.innerHTML = `
-                <h4>Ingredientes e Quantidades:</h4>
-                <ul>
-                    ${recipe.ingredients(weight)}
-                </ul>
-                <div class="meal-prep">
-                    <strong>Como preparar:</strong> ${recipe.prep}
+            html += `
+            <div class="meal-card">
+                <div class="meal-header">
+                    <h2 class="meal-title">${dietData[i].title}</h2>
+                    <span class="meal-time">⌚ Sugestão: ${dietData[i].time}</span>
                 </div>
-            `;
+                <div class="option-selector"><select id="select-m${i}" onchange="renderMealContent()"></select></div>
+                <div class="meal-content" id="content-m${i}"></div>
+            </div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function applyFiltersAndRender() {
+        const checkedTags = Array.from(document.querySelectorAll('.ing-checkbox:checked')).map(cb => cb.value);
+
+        for (let i = 1; i <= 5; i++) {
+            const selectEl = document.getElementById(`select-m${i}`);
+            selectEl.innerHTML = ''; 
+
+            const validRecipes = dietData[i].recipes.map((recipe, index) => ({recipe, originalIndex: index}))
+                .filter(item => item.recipe.tags.every(tag => checkedTags.includes(tag)));
+
+            if (validRecipes.length > 0) {
+                validRecipes.forEach(item => {
+                    selectEl.innerHTML += `<option value="${item.originalIndex}">${item.recipe.title}</option>`;
+                });
+            } else {
+                selectEl.innerHTML = `<option value="-1">Nenhuma receita compatível selecionada</option>`;
+            }
+        }
+        renderMealContent();
+    }
+
+    function renderMealContent() {
+        const weight = parseFloat(document.getElementById('weight').value);
+        if (!weight) return;
+
+        for (let i = 1; i <= 5; i++) {
+            const val = document.getElementById(`select-m${i}`).value;
+            const contentDiv = document.getElementById(`content-m${i}`);
+
+            if (val === "-1") {
+                contentDiv.innerHTML = `<div class="meal-prep" style="border-left-color: #EF4444; background: #FEF2F2; color: #991B1B;">Aviso: Despensa vazia para este horário.</div>`;
+                continue;
+            }
+
+            const recipe = dietData[i].recipes[val];
+            contentDiv.innerHTML = `<h4>Ingredientes:</h4><ul>${recipe.ing(weight)}</ul><div class="meal-prep"><strong>Preparo:</strong> ${recipe.prep}</div>`;
         }
     }
 
-    // Executa no carregamento da página para inicializar os valores
-    window.onload = updateAllMeals;
+    window.onload = init;
 </script>
 </body>
 </html>
