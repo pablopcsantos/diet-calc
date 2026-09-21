@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +14,27 @@
             --text-main: #1F2937;
             --text-muted: #6B7280;
             --border: #E5E7EB;
+            --input-bg: #FFFFFF;
+            --alert-bg: #EFF6FF;
+            --alert-border: #3B82F6;
+            --prep-bg: #FFFBEB;
+            --prep-border: #F59E0B;
+        }
+
+        [data-theme="dark"] {
+            --primary: #818CF8; 
+            --primary-hover: #6366F1;
+            --secondary: #34D399; 
+            --bg-color: #111827;
+            --card-bg: #1F2937;
+            --text-main: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border: #374151;
+            --input-bg: #374151;
+            --alert-bg: #1E3A8A;
+            --alert-border: #60A5FA;
+            --prep-bg: #78350F;
+            --prep-border: #FBBF24;
         }
 
         body {
@@ -23,15 +44,31 @@
             line-height: 1.6;
             margin: 0;
             padding: 20px 10px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container {
-            max-width: 850px;
+            max-width: 900px;
             margin: 0 auto;
             background: var(--card-bg);
             padding: 40px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         header { text-align: center; margin-bottom: 30px; }
@@ -43,7 +80,7 @@
             border-bottom: 2px solid var(--border); padding-bottom: 10px;
         }
         .tab-btn {
-            background: #E5E7EB; color: var(--text-muted); border: none;
+            background: var(--border); color: var(--text-main); border: none;
             padding: 12px 20px; border-radius: 8px; font-weight: 600;
             cursor: pointer; transition: all 0.3s ease; flex: 1; font-size: 1.1rem;
         }
@@ -52,23 +89,22 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Perfil do Usuário e Calculadora */
         .profile-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            background: #EEF2FF;
+            background: var(--alert-bg);
             padding: 25px;
             border-radius: 12px;
-            border: 1px solid #C7D2FE;
+            border: 1px solid var(--alert-border);
             margin-bottom: 20px;
         }
 
         .input-group { display: flex; flex-direction: column; gap: 5px; }
-        .input-group label { font-weight: 600; font-size: 0.95rem; color: #3730A3; }
+        .input-group label { font-weight: 600; font-size: 0.95rem; color: var(--text-main); }
         .input-group input, .input-group select {
-            padding: 10px; font-size: 1rem; border: 2px solid #A5B4FC;
-            border-radius: 8px; outline: none; background: white;
+            padding: 10px; font-size: 1rem; border: 2px solid var(--border);
+            border-radius: 8px; outline: none; background: var(--input-bg); color: var(--text-main);
         }
         .input-group input:focus, .input-group select:focus { border-color: var(--primary); }
         
@@ -76,13 +112,12 @@
             background: var(--primary); color: white; padding: 20px;
             border-radius: 12px; margin-bottom: 30px; text-align: center;
         }
-        .calc-results h3 { margin: 0 0 10px 0; font-size: 1.5rem; }
-        .calc-results p { margin: 5px 0; font-size: 1.1rem; opacity: 0.9; }
+        .calc-results h3 { margin: 0 0 10px 0; font-size: 1.5rem; color: white; }
+        .calc-results p { margin: 5px 0; font-size: 1.1rem; opacity: 0.9; color: white; }
         .calc-results strong { color: #A7F3D0; font-size: 1.2rem; }
 
-        /* Ingredientes e Cards */
         .ingredient-group {
-            margin-bottom: 25px; padding: 20px; background: #FAFAFA;
+            margin-bottom: 25px; padding: 20px; background: var(--card-bg);
             border-radius: 12px; border: 1px solid var(--border);
         }
         .ingredient-group h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
@@ -90,48 +125,48 @@
         .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; }
         .checkbox-label input { width: 18px; height: 18px; accent-color: var(--primary); }
 
-        .meal-card { border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 25px; background: #FAFAFA; }
+        .meal-card { border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 25px; background: var(--card-bg); }
         .meal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .meal-title { margin: 0; font-size: 1.4rem; color: var(--text-main); }
         .meal-time { background: var(--secondary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; }
-        .option-selector select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; font-weight: 500; margin-bottom: 20px; background-color: white; }
+        .option-selector select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; font-weight: 500; margin-bottom: 20px; background-color: var(--input-bg); color: var(--text-main); }
         .meal-content h4 { margin-top: 0; color: var(--primary); }
         .meal-content ul { padding-left: 20px; }
-        .meal-prep { background: #FFFBEB; padding: 15px; border-radius: 8px; border-left: 4px solid #F59E0B; margin-top: 15px; font-style: italic; }
+        .meal-prep { background: var(--prep-bg); padding: 15px; border-radius: 8px; border-left: 4px solid var(--prep-border); margin-top: 15px; font-style: italic; }
 
-        .explanations { margin-top: 40px; padding: 25px; background: #F0FDF4; border-radius: 12px; border: 1px solid #BBF7D0; }
-        .explanations h2 { color: #166534; margin-top: 0; }
-        .explanations h3 { color: #15803D; margin-top: 20px; }
+        .explanations { margin-top: 40px; padding: 25px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); }
+        .explanations h2 { color: var(--primary); margin-top: 0; }
+        .explanations h3 { color: var(--secondary); margin-top: 20px; }
 
         .export-btn, .btn-continue {
             background-color: var(--secondary); color: white; padding: 15px 30px; font-size: 1.2rem;
             border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 20px; transition: 0.3s;
         }
-        .export-btn:hover, .btn-continue:hover { background-color: #059669; }
+        .export-btn:hover, .btn-continue:hover { opacity: 0.9; }
         .btn-continue { background-color: var(--primary); }
-        .btn-continue:hover { background-color: var(--primary-hover); }
 
-        /* Regras de Impressão */
         @media print {
-            body { background: white; padding: 0; }
+            body { background: white; color: black; padding: 0; }
             .container { box-shadow: none; padding: 0; max-width: 100%; }
-            .tabs-nav, .export-btn, #tab-ingredientes, .btn-continue { display: none !important; }
+            .tabs-nav, .export-btn, #tab-ingredientes, .btn-continue, .theme-toggle { display: none !important; }
             #tab-plano { display: block !important; }
             .profile-grid { display: none; }
             .calc-results { background: white; color: black; border: 2px solid black; break-after: avoid; }
-            .calc-results strong { color: black; }
-            .meal-card { page-break-inside: avoid; border: 1px solid #ccc; }
-            .option-selector select { border: none; appearance: none; background: transparent; font-weight: bold; font-size: 1.1rem; padding: 0; color: var(--primary); }
-            .explanations { page-break-inside: avoid; border: 1px solid #ccc; }
+            .calc-results h3, .calc-results p, .calc-results strong { color: black; }
+            .meal-card { page-break-inside: avoid; border: 1px solid #ccc; background: white; }
+            .option-selector select { border: none; appearance: none; background: transparent; font-weight: bold; font-size: 1.1rem; padding: 0; color: black; }
+            .explanations { page-break-inside: avoid; border: 1px solid #ccc; background: white; }
         }
     </style>
 </head>
 <body>
 
+<button class="theme-toggle" onclick="toggleTheme()">🌓 Modo Escuro</button>
+
 <div class="container">
     <header>
         <h1>DietCalc - Musculação</h1>
-        <p>Gere seu plano alimentar adaptado à sua rotina, biotipo e orçamento.</p>
+        <p>Plano alimentar adaptado à sua rotina, biotipo e orçamento.</p>
     </header>
 
     <div class="tabs-nav">
@@ -139,9 +174,8 @@
         <button class="tab-btn" onclick="switchTab('tab-plano', this)">2. Seu Plano Alimentar</button>
     </div>
 
-    <!-- ABA 1: Perfil e Filtro de Ingredientes -->
+    <!-- ABA 1 -->
     <div id="tab-ingredientes" class="tab-content active">
-        
         <div class="profile-grid">
             <div class="input-group" style="grid-column: 1 / -1;">
                 <label for="userName">Seu Nome Completo:</label>
@@ -169,16 +203,12 @@
             <div class="input-group" style="grid-column: 1 / -1;">
                 <label for="activity">Nível de Atividade Física:</label>
                 <select id="activity" onchange="updateCalculations()">
-                    <option value="1.2">Sedentário (Pouco ou nenhum exercício + trabalho de mesa)</option>
-                    <option value="1.35">Pouco Ativo (Exercícios leves 1-3 dias/semana)</option>
+                    <option value="1.2">Sedentário (Pouco ou nenhum exercício)</option>
+                    <option value="1.35">Pouco Ativo (1-3 dias/semana)</option>
                     <option value="1.55" selected>Moderadamente Ativo (Musculação 3-6 dias/semana)</option>
-                    <option value="1.75">Muito Ativo (Esforço bruto / Atleta 6-7 dias/semana)</option>
+                    <option value="1.75">Muito Ativo (Atleta 6-7 dias/semana)</option>
                 </select>
             </div>
-        </div>
-
-        <div style="background: #EFF6FF; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #3B82F6;">
-            <strong>Filtro de Despensa:</strong> Marque os alimentos que você gosta e cabem no orçamento. O sistema só gerará pratos com estes ingredientes.
         </div>
 
         <div class="ingredient-group">
@@ -197,26 +227,22 @@
         <button class="btn-continue" onclick="document.querySelectorAll('.tab-btn')[1].click()">Gerar Relatório e Plano Alimentar ➔</button>
     </div>
 
-    <!-- ABA 2: Plano Alimentar -->
+    <!-- ABA 2 -->
     <div id="tab-plano" class="tab-content">
-        
-        <div class="calc-results" id="report-header">
-            <!-- Preenchido via JS com os dados de Harris-Benedict -->
-        </div>
-
+        <div class="calc-results" id="report-header"></div>
         <div id="meals-container"></div>
 
         <div class="explanations">
-            <h2>Princípios da Hipertrofia</h2>
+            <h2>Dicas para Sustentar a Dieta</h2>
             
-            <h3>O ajuste de calorias é o segredo</h3>
-            <p>Para gerar hipertrofia, você precisa de energia em excesso. O valor calculado no topo do relatório é o seu Gasto Diário. Use-o para guiar sua dieta. Monitore semanalmente: se o peso estagnar, <strong>adicione 250 kcal</strong>; se notar acúmulo excessivo de gordura, <strong>retire 250 kcal</strong>.</p>
+            <h3>Marmitas e Armazenamento</h3>
+            <p>Se você tem pouco tempo, cozinhar refeições em grande quantidade no domingo[cite: 4] e guardá-las salva o planejamento. Para congelar, dê preferência a <strong>recipientes de vidro</strong> para evitar o vazamento de substâncias como o BPA presente no plástico[cite: 5]. O frango com batata doce[cite: 4] e o escondidinho[cite: 5] são excelentes para isso.</p>
             
-            <h3>Cuidado ao "comer igual a um monstro"</h3>
-            <p>Comer sem critério gera dois cenários: ou você acha que come muito mas não atinge as calorias necessárias (típico de ectomorfos), ou você excede absurdamente e o corpo armazena o que não usou para o músculo em forma de gordura pura.</p>
+            <h3>Economia Inteligente</h3>
+            <p>Manter a dieta não precisa ser caro[cite: 2]. Duas regras de ouro: nunca compre aveia de caixinha no supermercado; vá a casas de cereais e compre a granel (é mais barato e mais puro)[cite: 2]. Além disso, embora o ovo seja barato, o <strong>frango ganha em custo-benefício</strong> na proporção de grama de proteína por real gasto[cite: 2]. Para suplementação, o Whey Protein a granel entrega a mesma qualidade que marcas caras por uma fração do preço[cite: 2].</p>
 
-            <h3>E os hipercalóricos?</h3>
-            <p>Eles funcionam para bater as calorias, mas cuidado com produtos baratos. A maioria é uma bomba de açúcares simples com proteína de soja e gelatina, contendo apenas traços de Whey para fazer marketing no rótulo. Prefira comida de verdade ou suplementos de marcas confiáveis.</p>
+            <h3>Rotina Corrida (Refeição 3)</h3>
+            <p>O aplicativo gerou opções específicas para a Refeição 3 focadas no horário de trabalho, que não exigem geladeira ou micro-ondas. Se mesmo assim precisar de outras alternativas, os shakes em pó (misturados com água na hora) são perfeitos[cite: 6]. Você pode monitorar as calorias destas opções práticas usando aplicativos como o MyFitnessPal[cite: 6].</p>
         </div>
 
         <button class="export-btn" onclick="window.print()">Exportar Relatório em PDF</button>
@@ -224,44 +250,69 @@
 </div>
 
 <script>
+    function toggleTheme() {
+        const html = document.documentElement;
+        if (html.getAttribute('data-theme') === 'light') {
+            html.setAttribute('data-theme', 'dark');
+        } else {
+            html.setAttribute('data-theme', 'light');
+        }
+    }
+
     const allIngredients = {
         proteinas: [
-            { id: 'ovo', label: 'Ovos Inteiros' }, { id: 'whey', label: 'Whey Protein' },
-            { id: 'frango', label: 'Peito de Frango' }, { id: 'patinho', label: 'Carne Vermelha' },
-            { id: 'tilapia', label: 'Filé de Tilápia' }, { id: 'iogurte', label: 'Iogurte Natural' }
+            { id: 'ovo', label: 'Ovos Inteiros' }, { id: 'whey', label: 'Whey Protein / Albumina' },
+            { id: 'frango', label: 'Peito de Frango' }, { id: 'patinho', label: 'Carne Vermelha Moída' },
+            { id: 'tilapia', label: 'Filé de Tilápia / Peixe' }, { id: 'iogurte', label: 'Iogurte Natural' },
+            { id: 'queijo', label: 'Queijo (Mussarela/Cottage)' }, { id: 'presunto', label: 'Presunto Magro' }
         ],
         carbos: [
-            { id: 'aveia', label: 'Aveia' }, { id: 'banana', label: 'Banana' },
-            { id: 'pao', label: 'Pão Integral' }, { id: 'batata', label: 'Batata Doce' },
-            { id: 'arroz', label: 'Arroz Branco' }, { id: 'mandioca', label: 'Mandioca' },
-            { id: 'tapioca', label: 'Tapioca' }, { id: 'macarrao', label: 'Macarrão' }
+            { id: 'aveia', label: 'Aveia (Flocos/Farinha)' }, { id: 'banana', label: 'Banana / Frutas' },
+            { id: 'pao', label: 'Pão Integral' }, { id: 'batata', label: 'Batata Doce / Inglesa' },
+            { id: 'arroz', label: 'Arroz Branco / Integral' }, { id: 'mandioca', label: 'Mandioca / Aipim' },
+            { id: 'macarrao', label: 'Macarrão Integral' }, { id: 'feijao', label: 'Feijão' }
         ],
         gorduras: [
             { id: 'amendoim', label: 'Pasta de Amendoim' }, { id: 'abacate', label: 'Abacate' },
-            { id: 'azeite', label: 'Azeite Extra Virgem' }
+            { id: 'azeite', label: 'Azeite Extra Virgem' }, { id: 'castanhas', label: 'Mix de Castanhas' }
         ]
     };
 
     const dietData = {
         1: { title: "Refeição 1: Café da Manhã", time: "07:00", recipes: [
-            { title: "Panqueca de Aveia", tags: ['ovo', 'aveia', 'banana'], ing: (w) => `<li><strong>${Math.max(2, Math.round(w * 0.04))}</strong> ovos</li><li><strong>${Math.round(w * 0.71)}g</strong> aveia</li><li><strong>1</strong> banana</li>`, prep: "Bata tudo e asse em frigideira." },
-            { title: "Iogurte Proteico", tags: ['iogurte', 'whey'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> iogurte</li><li><strong>${Math.round(w * 0.4)}g</strong> Whey</li>`, prep: "Misture o whey no iogurte." }
+            { title: "Panqueca Proteica", tags: ['ovo', 'aveia', 'banana'], ing: (w) => `<li><strong>${Math.max(2, Math.round(w * 0.04))}</strong> ovos inteiros</li><li><strong>${Math.round(w * 0.71)}g</strong> aveia</li><li><strong>1</strong> banana</li>`, prep: "Bata no liquidificador e asse em frigideira[cite: 3, 4]." },
+            { title: "Mingau de Aveia", tags: ['aveia', 'whey', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 0.8)}g</strong> aveia</li><li><strong>1 copo</strong> de leite integral</li><li><strong>${Math.round(w * 0.4)}g</strong> Whey</li><li><strong>1 col. sopa</strong> pasta de amendoim</li>`, prep: "Aqueça a aveia com leite por 2 min, depois misture o restante[cite: 6]." },
+            { title: "Shake Hipercalórico", tags: ['whey', 'banana', 'aveia', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 0.5)}g</strong> Whey/Albumina</li><li><strong>1</strong> banana</li><li><strong>${Math.round(w * 0.7)}g</strong> aveia</li><li><strong>1 col. sopa</strong> pasta de amendoim</li>`, prep: "Bata tudo no liquidificador. Ótimo para quem treina cedo[cite: 4, 6]." },
+            { title: "Ovos Mexidos Turbinados", tags: ['ovo', 'queijo', 'presunto', 'pao'], ing: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> ovos</li><li><strong>2</strong> fatias de queijo</li><li><strong>2</strong> fatias de presunto</li><li><strong>2</strong> fatias pão integral</li>`, prep: "Faça os ovos mexidos com cebola e tomate, coloque no pão torrado[cite: 6]." },
+            { title: "Iogurte Proteico", tags: ['iogurte', 'aveia', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> iogurte natural</li><li><strong>${Math.round(w * 0.6)}g</strong> aveia</li><li><strong>1 col. sopa</strong> pasta de amendoim</li>`, prep: "Misture tudo em um bowl. Refeição rápida e sem fogão[cite: 3]." }
         ]},
         2: { title: "Refeição 2: Almoço", time: "12:00", recipes: [
-            { title: "Frango com Batata Doce", tags: ['frango', 'batata', 'azeite'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> frango</li><li><strong>${Math.round(w * 3.0)}g</strong> batata doce</li><li>Salada e 1 col. azeite</li>`, prep: "Grelhe o frango. Tempere salada com azeite." },
-            { title: "Patinho com Arroz", tags: ['patinho', 'arroz'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> patinho</li><li><strong>${Math.round(w * 2.5)}g</strong> arroz</li>`, prep: "Refogue a carne e sirva com arroz." }
+            { title: "Clássico: Frango e Batata Doce", tags: ['frango', 'batata'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> frango</li><li><strong>${Math.round(w * 3.0)}g</strong> batata doce</li><li>Vegetais (brócolis/couve-flor)</li>`, prep: "Cozinhe a batata até amolecer. Grelhe o frango.[cite: 3, 4, 5]." },
+            { title: "Arroz Integral e Frango", tags: ['frango', 'arroz'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> frango</li><li><strong>${Math.round(w * 2.5)}g</strong> arroz integral</li><li>Vegetais variados</li>`, prep: "Frango desfiado ou grelhado com arroz cozido normalmente[cite: 3, 5]." },
+            { title: "Escondidinho de Batata Doce", tags: ['patinho', 'batata'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> patinho moído</li><li><strong>${Math.round(w * 3.0)}g</strong> batata doce (em purê)</li>`, prep: "Faça camadas de purê e carne moída. Asse por 15 min[cite: 5]." },
+            { title: "Macarrão com Frango", tags: ['macarrao', 'frango'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> macarrão integral</li><li><strong>${Math.round(w * 2.1)}g</strong> peito de frango</li><li>Abobrinha refogada</li>`, prep: "Cozinhe o macarrão e misture com o frango em cubos e a abobrinha[cite: 5]." },
+            { title: "Tilápia com Mandioca", tags: ['tilapia', 'mandioca'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> filé de tilápia</li><li><strong>${Math.round(w * 2.5)}g</strong> mandioca (aipim)</li>`, prep: "Asse o peixe e sirva com a mandioca cozida[cite: 3, 5]." }
         ]},
-        3: { title: "Refeição 3: Pré-Treino", time: "16:00", recipes: [
-            { title: "Shake de Whey", tags: ['whey', 'banana'], ing: (w) => `<li><strong>${Math.round(w * 0.4)}g</strong> Whey</li><li><strong>300ml</strong> água/leite</li><li><strong>1</strong> banana</li>`, prep: "Bata no liquidificador." },
-            { title: "Crepioca", tags: ['tapioca', 'ovo'], ing: (w) => `<li><strong>${Math.round(w * 0.6)}g</strong> tapioca</li><li><strong>${Math.max(2, Math.round(w * 0.03))}</strong> ovos</li>`, prep: "Bata a goma com ovos e faça na frigideira." }
+        3: { title: "Refeição 3: Lanche no Trabalho (Sem Geladeira)", time: "16:00", recipes: [
+            { title: "Sanduíche de Pasta de Amendoim", tags: ['pao', 'amendoim', 'banana'], ing: (w) => `<li><strong>2</strong> fatias de pão integral</li><li><strong>2 col. sopa</strong> pasta de amendoim</li><li><strong>1</strong> banana fatiada</li>`, prep: "Passe a pasta no pão e adicione a banana. Não estraga fora da geladeira." },
+            { title: "Shake Portátil (Pó)", tags: ['whey', 'aveia'], ing: (w) => `<li><strong>${Math.round(w * 0.5)}g</strong> Whey/Albumina em pó</li><li><strong>${Math.round(w * 0.7)}g</strong> aveia (farinha)</li>`, prep: "Leve o pó seco na coqueteleira. No trabalho, adicione água gelada do bebedouro[cite: 6]." },
+            { title: "Mix de Castanhas e Whey", tags: ['castanhas', 'whey'], ing: (w) => `<li><strong>40g</strong> Mix de castanhas</li><li><strong>${Math.round(w * 0.5)}g</strong> Whey Protein (em pó)</li>`, prep: "Coma as castanhas e beba o whey misturado com água. Prático e não perecível." },
+            { title: "Panqueca Fria", tags: ['ovo', 'aveia'], ing: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> claras de ovo (fritas)</li><li><strong>${Math.round(w * 0.7)}g</strong> aveia</li>`, prep: "Faça a panqueca em casa de manhã, guarde na tapueware e coma fria no trabalho[cite: 4]." },
+            { title: "Barrinha Caseira", tags: ['aveia', 'amendoim', 'whey'], ing: (w) => `<li><strong>${Math.round(w * 0.5)}g</strong> aveia</li><li><strong>1 col. sopa</strong> pasta amendoim</li><li><strong>${Math.round(w * 0.4)}g</strong> Whey</li>`, prep: "Misture com pouca água até virar massa. Molde, congele na noite anterior e leve no papel alumínio." }
         ]},
-        4: { title: "Refeição 4: Pós-Treino", time: "20:00", recipes: [
-            { title: "Frango e Arroz", tags: ['frango', 'arroz'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> frango</li><li><strong>${Math.round(w * 1.5)}g</strong> arroz branco</li>`, prep: "Refeição clássica para repor glicogênio." },
-            { title: "Macarrão com Carne", tags: ['macarrao', 'patinho'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> macarrão</li><li><strong>${Math.round(w * 2.1)}g</strong> patinho</li>`, prep: "Macarrão à bolonhesa magro." }
+        4: { title: "Refeição 4: Jantar / Pós-Treino", time: "20:00", recipes: [
+            { title: "Frango, Arroz e Feijão", tags: ['frango', 'arroz', 'feijao'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> frango</li><li><strong>${Math.round(w * 1.5)}g</strong> arroz branco</li><li><strong>${Math.round(w * 1.5)}g</strong> feijão</li>`, prep: "Clássico brasileiro. O arroz branco ajuda a repor o glicogênio rapidamente[cite: 3]." },
+            { title: "Hambúrguer Caseiro de Patinho", tags: ['patinho', 'batata'], ing: (w) => `<li><strong>${Math.round(w * 2.1)}g</strong> hambúrguer de patinho</li><li><strong>${Math.round(w * 2.5)}g</strong> batata inglesa cozida</li>`, prep: "Modele a carne moída com cebola e alho, asse ou grelhe[cite: 3, 4]." },
+            { title: "Macarrão com Carne Moída", tags: ['macarrao', 'patinho'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> macarrão integral</li><li><strong>${Math.round(w * 2.1)}g</strong> patinho moído</li>`, prep: "Macarrão à bolonhesa magro[cite: 5]." },
+            { title: "Frango com Batata (Requentar)", tags: ['frango', 'batata'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> frango</li><li><strong>${Math.round(w * 3.0)}g</strong> batata doce</li>`, prep: "Aqueça o que sobrou do almoço. Adicione pouca água no micro-ondas para não ressecar[cite: 4]." },
+            { title: "Tilápia com Arroz e Brócolis", tags: ['tilapia', 'arroz'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> filé de tilápia</li><li><strong>${Math.round(w * 2.0)}g</strong> arroz integral</li>`, prep: "Grelhe o peixe e sirva com arroz e brócolis cozido no vapor[cite: 3]." }
         ]},
         5: { title: "Refeição 5: Ceia", time: "23:00", recipes: [
-            { title: "Iogurte com Amendoim", tags: ['iogurte', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> iogurte</li><li><strong>${Math.round(w * 0.25)}g</strong> pasta de amendoim</li>`, prep: "Misture bem. A gordura atrasa a digestão." },
-            { title: "Ovos com Azeite", tags: ['ovo', 'azeite'], ing: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> ovos cozidos</li><li><strong>1 col. sopa</strong> azeite</li>`, prep: "Cozinhe os ovos e regue com azeite." }
+            { title: "Iogurte com Amendoim", tags: ['iogurte', 'amendoim'], ing: (w) => `<li><strong>${Math.round(w * 2.5)}g</strong> iogurte natural</li><li><strong>1 col. sopa</strong> pasta de amendoim</li>`, prep: "Misture bem. A gordura atrasa a digestão no sono[cite: 3]." },
+            { title: "Ovos com Azeite", tags: ['ovo', 'azeite'], ing: (w) => `<li><strong>${Math.max(3, Math.round(w * 0.05))}</strong> ovos cozidos</li><li><strong>1 col. sopa</strong> azeite</li>`, prep: "Cozinhe os ovos e regue com azeite." },
+            { title: "Shake da Preguiça", tags: ['whey', 'leite'], ing: (w) => `<li><strong>${Math.round(w * 0.5)}g</strong> Whey/Albumina</li><li><strong>300ml</strong> leite</li>`, prep: "Dia cansativo sem vontade de lavar louça? Bata no liquidificador e vá dormir[cite: 4]." },
+            { title: "Vitamina de Banana", tags: ['whey', 'banana'], ing: (w) => `<li><strong>${Math.round(w * 0.4)}g</strong> Whey</li><li><strong>1</strong> banana</li><li><strong>300ml</strong> leite</li>`, prep: "Bata tudo no liquidificador[cite: 3]." },
+            { title: "Creme de Abacate", tags: ['abacate', 'whey'], ing: (w) => `<li><strong>${Math.round(w * 1.5)}g</strong> abacate</li><li><strong>${Math.round(w * 0.4)}g</strong> Whey</li>`, prep: "Amasse o abacate e misture o pó até virar um creme doce." }
         ]}
     };
 
@@ -275,6 +326,7 @@
         ['proteinas', 'carbos', 'gorduras'].forEach(category => {
             const grid = document.getElementById(`grid-${category}`);
             allIngredients[category].forEach(item => {
+                // Remove required 'leite' for simplicity, assuming basic items are always ok if selected
                 grid.innerHTML += `<label class="checkbox-label"><input type="checkbox" class="ing-checkbox" value="${item.id}" checked onchange="applyFiltersAndRender()"> ${item.label}</label>`;
             });
         });
@@ -298,16 +350,9 @@
 
         if(!weight || !height || !age) return;
 
-        // Equação de Harris-Benedict
-        let tmb = 0;
-        if (gender === 'M') {
-            tmb = 66 + (13.7 * weight) + (5 * height) - (6.76 * age);
-        } else {
-            tmb = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
-        }
-
+        let tmb = gender === 'M' ? 66 + (13.7 * weight) + (5 * height) - (6.76 * age) : 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
         const tdee = tmb * activity;
-        const hipertrofia = tdee + 250;
+        const hipertrofia = tdee + 250; // Adicionando bloco de 250kcal
 
         document.getElementById('report-header').innerHTML = `
             <h3 id="report-name">Plano Nutricional de ${name}</h3>
@@ -338,13 +383,15 @@
 
     function applyFiltersAndRender() {
         const checkedTags = Array.from(document.querySelectorAll('.ing-checkbox:checked')).map(cb => cb.value);
+        // Explicit bypass logic for simple ingredients not mapped to checkboxes
+        const bypass = ['leite']; 
 
         for (let i = 1; i <= 5; i++) {
             const selectEl = document.getElementById(`select-m${i}`);
             selectEl.innerHTML = ''; 
 
             const validRecipes = dietData[i].recipes.map((recipe, index) => ({recipe, originalIndex: index}))
-                .filter(item => item.recipe.tags.every(tag => checkedTags.includes(tag)));
+                .filter(item => item.recipe.tags.every(tag => checkedTags.includes(tag) || bypass.includes(tag)));
 
             if (validRecipes.length > 0) {
                 validRecipes.forEach(item => {
@@ -366,7 +413,7 @@
             const contentDiv = document.getElementById(`content-m${i}`);
 
             if (val === "-1") {
-                contentDiv.innerHTML = `<div class="meal-prep" style="border-left-color: #EF4444; background: #FEF2F2; color: #991B1B;">Aviso: Despensa vazia para este horário.</div>`;
+                contentDiv.innerHTML = `<div class="meal-prep" style="border-left-color: #EF4444; background: var(--alert-bg); color: var(--text-main);">Aviso: Despensa vazia para este horário. Libere mais ingredientes.</div>`;
                 continue;
             }
 
