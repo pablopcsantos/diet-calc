@@ -197,30 +197,30 @@
 .nutrition-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.nutrition-item{background:var(--alert-bg);padding:8px;border-radius:8px;text-align:center}.nutrition-item span{display:block;color:var(--text-muted);font-size:.75rem;text-transform:uppercase}
 .badge{display:inline-block;background:var(--primary);color:#fff;border-radius:999px;padding:3px 9px;font-size:.76rem;font-weight:700;margin-right:5px}.category-badge{background:var(--secondary)}
 .meal-type-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.meal-type-badge{display:inline-block;border:1px solid var(--border);background:var(--surface-muted);color:var(--text-main);border-radius:999px;padding:3px 8px;font-size:.72rem;font-weight:700}
-.catalog-toolbar{display:grid;grid-template-columns:2fr 1fr 1.2fr 1.4fr;gap:10px;margin-bottom:14px}.catalog-summary{color:var(--text-muted);margin-bottom:15px}.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}.recipe-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card-bg);display:flex;flex-direction:column;box-shadow:0 5px 14px rgba(31,41,55,.07)}.recipe-card-body{padding:18px;flex:1}.recipe-card h3{margin:0 0 8px;color:var(--primary)}.recipe-card details{margin-top:12px}.recipe-card summary{cursor:pointer;font-weight:700;color:var(--primary)}.recipe-footer{padding:12px 18px;background:var(--alert-bg);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:.82rem}.recipe-footer div{text-align:center}.recipe-footer strong{display:block}.no-results{text-align:center;padding:30px;color:var(--text-muted)}
+.catalog-toolbar{display:grid;grid-template-columns:2fr 1fr 1.2fr;gap:10px;margin-bottom:14px}.catalog-summary{color:var(--text-muted);margin-bottom:15px}.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}.recipe-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card-bg);display:flex;flex-direction:column;box-shadow:0 5px 14px rgba(31,41,55,.07)}.recipe-card-body{padding:18px;flex:1}.recipe-card h3{margin:0 0 8px;color:var(--primary)}.recipe-card details{margin-top:12px}.recipe-card summary{cursor:pointer;font-weight:700;color:var(--primary)}.recipe-footer{padding:12px 18px;background:var(--alert-bg);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:.82rem}.recipe-footer div{text-align:center}.recipe-footer strong{display:block}.no-results{text-align:center;padding:30px;color:var(--text-muted)}
 @media(max-width:720px){.catalog-toolbar{grid-template-columns:1fr}.nutrition-row,.recipe-footer{grid-template-columns:repeat(2,1fr)}}
 .print-report{display:none}
 @page{size:A4;margin:12mm}
 @media print{
   html,body{background:#fff!important;color:#111!important;margin:0!important;padding:0!important}
   body>.theme-toggle,body>.container{display:none!important}
-  .print-report{display:block!important;font-family:Arial,Helvetica,sans-serif;font-size:10.5pt;line-height:1.45;color:#111}
-  .print-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #111;padding-bottom:8px;margin-bottom:12px}
-  .print-header h1{font-size:24pt;margin:0}.print-header p{margin:2px 0 0}.print-date{font-size:9pt;color:#555}
+  .print-report{display:block!important;font-family:Arial,Helvetica,sans-serif;font-size:10.5pt;line-height:1.45;color:#24323d}
+  .print-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #315d6d;padding-bottom:8px;margin-bottom:12px;color:#244f60}
+  .print-header h1{font-size:24pt;margin:0;color:#244f60}.print-header p{margin:2px 0 0;color:#51636d}.print-date{font-size:9pt;color:#6b7d86}
   .print-profile,.print-overview table,.print-macros{width:100%;border-collapse:collapse}
   .print-profile{margin-bottom:16px}.print-profile th,.print-profile td,.print-overview th,.print-overview td,.print-macros th,.print-macros td{border:1px solid #bbb;padding:6px 7px;text-align:left;vertical-align:top}
-  .print-profile th,.print-overview th,.print-macros th{background:#eceff3;font-weight:700}
-  .print-overview{break-inside:avoid;margin-bottom:18px}.print-overview h2{font-size:14pt;margin:0 0 8px}
-  .print-meal{border-top:2px solid #444;padding-top:12px;margin-top:18px}
+  .print-profile th,.print-overview th,.print-macros th{background:#eaf1f3;color:#244f60;font-weight:700}
+  .print-overview{break-inside:avoid;margin-bottom:18px}.print-overview h2{font-size:14pt;margin:0 0 8px;color:#315d6d}
+  .print-meal{border-top:3px solid #4f7a68;padding-top:12px;margin-top:0;break-before:page;page-break-before:always}
   .print-meal-heading{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;break-after:avoid}
-  .print-meal-heading h2{font-size:16pt;margin:2px 0 2px}.print-meal-heading p{margin:0;color:#555}
-  .print-kicker{font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#444}
-  .print-time{font-weight:700;border:1px solid #999;border-radius:12px;padding:3px 8px;white-space:nowrap}
+  .print-meal-heading h2{font-size:16pt;margin:2px 0 2px;color:#244f60}.print-meal-heading p{margin:0;color:#61717a}
+  .print-kicker{font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#4f7a68}
+  .print-time{font-weight:700;border:1px solid #8ca5ad;color:#315d6d;background:#f3f7f8;border-radius:12px;padding:3px 8px;white-space:nowrap}
   .print-macros{margin:10px 0 12px}.print-macros th,.print-macros td{text-align:center}
-  .print-recipe-section{margin-top:10px}.print-recipe-section>h3{font-size:12pt;margin:0 0 5px;border-bottom:1px solid #bbb;padding-bottom:3px;break-after:avoid}
-  .print-subsection h4{font-size:10.5pt;margin:8px 0 3px}.print-subsection ul,.print-subsection ol{margin:3px 0 8px;padding-left:20px}
+  .print-recipe-section{margin-top:10px}.print-recipe-section>h3{font-size:12pt;margin:0 0 5px;color:#315d6d;border-bottom:1px solid #b8c8ce;padding-bottom:3px;break-after:avoid}
+  .print-subsection h4{font-size:10.5pt;margin:8px 0 3px;color:#4f7a68}.print-subsection ul,.print-subsection ol{margin:3px 0 8px;padding-left:20px}
   .print-subsection li{margin-bottom:2px}
-  .print-disclaimer{margin-top:20px;padding-top:8px;border-top:1px solid #aaa;font-size:8.5pt;color:#555}
+  .print-disclaimer{margin-top:20px;padding-top:8px;border-top:1px solid #b8c8ce;font-size:8.5pt;color:#6b7d86}
 }
 </style>
 </head>
@@ -278,7 +278,7 @@
         </div>
 
 
-        <p class="integration-hint"><strong>Ingredientes preferidos/disponíveis:</strong> marque os ingredientes que você realmente possui em casa. As categorias <strong>Principais</strong> começam sem seleção; as categorias <strong>Secundárias</strong> (Ervas e temperos, Molhos e condimentos e Doces e confeitaria) já vêm selecionadas por padrão e podem ser desmarcadas. Todos os <strong id="ingredient-catalog-count">171</strong> ingredientes catalogados estão organizados por grupo.</p>
+        <p class="integration-hint"><strong>Ingredientes preferidos/disponíveis:</strong> marque os ingredientes que você realmente possui em casa. As categorias <strong>Principais</strong> começam sem seleção; as categorias <strong>Secundárias</strong> (Vegetais, Leguminosas, Molhos e condimentos, Ervas e temperos e Doces e confeitaria) já vêm selecionadas por padrão e podem ser desmarcadas. Todos os <strong id="ingredient-catalog-count">171</strong> ingredientes catalogados estão organizados por grupo.</p>
         <div class="ingredient-picker">
             <h3>Minha despensa</h3>
             <div class="ingredient-picker-row">
@@ -309,16 +309,11 @@
 
     <div id="tab-receitas" class="tab-content">
         <h2 class="catalog-title">Banco de 200 Receitas</h2>
-        <p class="integration-hint">Pesquise por nome, categoria, <strong>tipo de refeição</strong> e pelos ingredientes marcados na sua despensa. Uma mesma receita pode pertencer a mais de um tipo de refeição.</p>
+        <p class="integration-hint">Navegue livremente por todas as 200 receitas. Use os filtros desta página para pesquisar por nome, categoria ou <strong>tipo de refeição</strong>. As seleções feitas na despensa ou no plano alimentar não alteram o Banco de Receitas.</p>
         <div class="catalog-toolbar">
             <input id="recipe-search" class="search-input" placeholder="Buscar receita..." oninput="renderRecipeCatalog()">
             <select id="category-filter" class="search-input" onchange="renderRecipeCatalog()"></select>
             <select id="meal-type-filter" class="search-input" onchange="renderRecipeCatalog()"></select>
-            <select id="match-mode" class="search-input" onchange="renderRecipeCatalog()">
-                <option value="pantry" selected>Posso preparar com minha despensa</option>
-                <option value="all">Contém todos os ingredientes selecionados</option>
-                <option value="any">Contém qualquer ingrediente selecionado</option>
-            </select>
         </div>
         <div class="catalog-summary" id="catalog-summary"></div>
         <div class="recipe-grid" id="recipe-grid"></div>
