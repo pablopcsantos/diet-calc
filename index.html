@@ -22,6 +22,8 @@
             --prep-bg: #FFF7E6;
             --prep-border: #D97706;
             --panel-shadow: 0 12px 28px rgba(31, 41, 55, 0.10);
+            --meal-card-bg: #F3F6FF;
+            --ingredient-card-bg: #F1F7F4;
         }
 
         [data-theme="dark"] {
@@ -41,6 +43,8 @@
             --prep-bg: #78350F;
             --prep-border: #FBBF24;
             --panel-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+            --meal-card-bg: #1C2740;
+            --ingredient-card-bg: #1B2A28;
         }
 
         body {
@@ -129,7 +133,7 @@
         .calc-results strong { color: #A7F3D0; font-size: 1.2rem; }
 
         .ingredient-group {
-            margin-bottom: 25px; padding: 20px; background: var(--surface-muted);
+            margin-bottom: 25px; padding: 20px; background: var(--ingredient-card-bg);
             border-radius: 12px; border: 1px solid var(--border);
         }
         .ingredient-group h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
@@ -145,7 +149,7 @@
         .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; }
         .checkbox-label input { width: 18px; height: 18px; accent-color: var(--primary); }
 
-        .meal-card { border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 25px; background: var(--surface-muted); box-shadow: 0 5px 14px rgba(31,41,55,.06); }
+        .meal-card { border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 25px; background: var(--meal-card-bg); box-shadow: 0 5px 14px rgba(31,41,55,.06); }
         .meal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .meal-title { margin: 0; font-size: 1.4rem; color: var(--text-main); }
         .meal-time { background: var(--secondary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; }
