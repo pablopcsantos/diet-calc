@@ -131,11 +131,24 @@ function getProfileMetrics(){
  const tdee=tmb*activity;
  return {name,gender,weight,height,age,activity,tmb,tdee,target:tdee+250};
 }
+function isGenericPrintSectionTitle(title,type){
+ const value=normalize(title).trim();
+ const genericTitles=type==='ingredients'
+   ?new Set(['ingredientes','ingrediente'])
+   :new Set(['modo de preparo','modo de preparacao','preparo','preparacao']);
+ return genericTitles.has(value);
+}
 function printRecipeIngredients(r){
- return r.ingredientSections.map(s=>`<div class="print-subsection"><h4>${esc(s.title)}</h4><ul>${s.items.map(x=>`<li>${esc(x.text)}</li>`).join('')}</ul></div>`).join('');
+ return r.ingredientSections.map(s=>{
+   const heading=isGenericPrintSectionTitle(s.title,'ingredients')?'':`<h4>${esc(s.title)}</h4>`;
+   return `<div class="print-subsection">${heading}<ul>${s.items.map(x=>`<li>${esc(x.text)}</li>`).join('')}</ul></div>`;
+ }).join('');
 }
 function printRecipePreparation(r){
- return r.preparationSections.map(s=>`<div class="print-subsection"><h4>${esc(s.title)}</h4><ol>${s.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`).join('');
+ return r.preparationSections.map(s=>{
+   const heading=isGenericPrintSectionTitle(s.title,'preparation')?'':`<h4>${esc(s.title)}</h4>`;
+   return `<div class="print-subsection">${heading}<ol>${s.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`;
+ }).join('');
 }
 function buildPrintReport(){
  const host=document.getElementById('print-report');
