@@ -90,7 +90,7 @@ function expandedAvailableIngredients(){
  return available;
 }
 function recipeCanBeMade(recipe){
- if(!selectedIngredients.size)return true;
+ if(!selectedIngredients.size)return false;
  const available=expandedAvailableIngredients();
  return recipe.ingredientTags.every(tag=>available.has(tag));
 }
@@ -111,7 +111,7 @@ function renderRecipeCatalog(){
    if(cat&&r.category!==cat)return false;
    if(mealType&&!r.mealTypes.includes(mealType))return false;
    if(q&&!normalize(r.title).includes(q))return false;
-   if(!selected.length)return true;
+   if(!selected.length)return mode==='pantry'?false:true;
    const tags=new Set(r.ingredientTags);
    if(mode==='pantry')return recipeCanBeMade(r);
    return mode==='all'?selected.every(x=>tags.has(x)):selected.some(x=>tags.has(x));
@@ -181,6 +181,7 @@ function init(){
    e.stopPropagation();
    setIngredientGroup(button.dataset.group,button.dataset.groupAction==='all');
  });
+ syncIngredientUI();
  updateCalculations();
  renderRecipeCatalog();
 }
