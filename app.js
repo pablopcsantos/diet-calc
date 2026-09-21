@@ -64,12 +64,12 @@ function renderIngredientGroups(query=''){
 }
 function setIngredientGroup(group,selectAll){
  INGREDIENT_CATALOG.filter(x=>x.group===group).forEach(x=>selectAll?selectedIngredients.add(x.id):selectedIngredients.delete(x.id));
- syncIngredientUI();renderPlan();renderRecipeCatalog();
+ syncIngredientUI();renderPlan();
 }
 function initializeDefaultIngredients(){
  INGREDIENT_CATALOG.filter(x=>SECONDARY_INGREDIENT_GROUPS.has(x.group)).forEach(x=>selectedIngredients.add(x.id));
 }
-function toggleIngredient(id,force){if(force===true)selectedIngredients.add(id);else if(force===false)selectedIngredients.delete(id);else selectedIngredients.has(id)?selectedIngredients.delete(id):selectedIngredients.add(id);syncIngredientUI();renderPlan();renderRecipeCatalog()}
+function toggleIngredient(id,force){if(force===true)selectedIngredients.add(id);else if(force===false)selectedIngredients.delete(id);else selectedIngredients.has(id)?selectedIngredients.delete(id):selectedIngredients.add(id);syncIngredientUI();renderPlan()}
 function syncIngredientUI(){
  document.querySelectorAll('[data-ingredient-id]').forEach(cb=>cb.checked=selectedIngredients.has(cb.dataset.ingredientId));
  const chips=document.getElementById('selected-chips');
@@ -78,8 +78,8 @@ function syncIngredientUI(){
  if(selectedCount)selectedCount.textContent=selectedIngredients.size;
  renderIngredientGroups(document.getElementById('ingredient-search')?.value||'');
 }
-function clearIngredients(){selectedIngredients.clear();syncIngredientUI();renderPlan();renderRecipeCatalog()}
-function selectPantryBasics(){PANTRY_BASIC_IDS.forEach(id=>{if(catalogById.has(id))selectedIngredients.add(id)});syncIngredientUI();renderPlan();renderRecipeCatalog()}
+function clearIngredients(){selectedIngredients.clear();syncIngredientUI();renderPlan()}
+function selectPantryBasics(){PANTRY_BASIC_IDS.forEach(id=>{if(catalogById.has(id))selectedIngredients.add(id)});syncIngredientUI();renderPlan()}
 function expandedAvailableIngredients(){
  const available=new Set(selectedIngredients);
  let changed=true;
@@ -106,19 +106,17 @@ function renderCategoryFilter(){document.getElementById('category-filter').inner
 function renderMealTypeFilter(){document.getElementById('meal-type-filter').innerHTML='<option value="">Todos os tipos de refeição</option>'+Object.entries(MEAL_TYPES).map(([id,label])=>`<option value="${id}">${esc(label)}</option>`).join('')}
 function renderRecipeCatalog(){
  const host=document.getElementById('recipe-grid');if(!host)return;
- const q=normalize(document.getElementById('recipe-search')?.value||''),cat=document.getElementById('category-filter')?.value||'',mealType=document.getElementById('meal-type-filter')?.value||'',mode=document.getElementById('match-mode')?.value||'pantry',selected=[...selectedIngredients];
+ const q=normalize(document.getElementById('recipe-search')?.value||'');
+ const cat=document.getElementById('category-filter')?.value||'';
+ const mealType=document.getElementById('meal-type-filter')?.value||'';
  const rows=RECIPE_DATABASE.filter(r=>{
    if(cat&&r.category!==cat)return false;
    if(mealType&&!r.mealTypes.includes(mealType))return false;
    if(q&&!normalize(r.title).includes(q))return false;
-   if(!selected.length)return mode==='pantry'?false:true;
-   const tags=new Set(r.ingredientTags);
-   if(mode==='pantry')return recipeCanBeMade(r);
-   return mode==='all'?selected.every(x=>tags.has(x)):selected.some(x=>tags.has(x));
+   return true;
  });
- const modeLabel=mode==='pantry'?'preparáveis com a despensa':mode==='all'?'contendo todos os selecionados':'contendo qualquer selecionado';
  const mealLabel=mealType?` · ${MEAL_TYPES[mealType]}`:'';
- document.getElementById('catalog-summary').textContent=`${rows.length} de ${RECIPE_DATABASE.length} receitas encontradas${mealLabel}${selected.length?` · ${selected.length} ingrediente(s) marcado(s) · ${modeLabel}`:''}.`;
+ document.getElementById('catalog-summary').textContent=`${rows.length} de ${RECIPE_DATABASE.length} receitas encontradas${mealLabel}.`;
  host.innerHTML=rows.length?rows.map(r=>`<article class="recipe-card"><div class="recipe-card-body"><h3>${esc(r.title)}</h3><span class="badge">${esc(r.servings)}</span><span class="badge category-badge">${esc(RECIPE_CATEGORIES[r.category]||r.category)}</span><div class="meal-type-badges">${r.mealTypes.map(t=>`<span class="meal-type-badge">${esc(MEAL_TYPES[t]||t)}</span>`).join('')}</div><details><summary>Ver receita completa</summary>${recipeDetailHTML(r)}</details></div><div class="recipe-footer"><div><span>kcal</span><strong>${esc(r.nutrition.calories)}</strong></div><div><span>Prot.</span><strong>${esc(r.nutrition.protein)}</strong></div><div><span>Carb.</span><strong>${esc(r.nutrition.carbs)}</strong></div><div><span>Gord.</span><strong>${esc(r.nutrition.fat)}</strong></div></div></article>`).join(''):'<div class="no-results">Nenhuma receita encontrada com os filtros atuais.</div>'
 }
 function getProfileMetrics(){
