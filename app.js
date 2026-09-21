@@ -1,4 +1,4 @@
-const PANTRY_BASIC_IDS=['agua','sal','pimenta','pimenta-reino','azeite','alho','cebola'];
+const PANTRY_BASIC_IDS=['sal','pimenta','pimenta-reino','azeite','alho','cebola'];
 const TAG_IMPLICATIONS={
 'arroz-integral':['arroz'],'batata-doce':['batata'],'farinha-aveia':['aveia'],'pao-integral':['pao'],
 'acucar-mascavo':['acucar'],'pimenta-reino':['pimenta'],'pasta-amendoim':['amendoim'],
