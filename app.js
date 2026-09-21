@@ -196,43 +196,86 @@ function renderWeeklyPlanning(){
      :'Ainda não há receitas compatíveis suficientes para montar o planejamento semanal.';
  }
 }
-function getWeeklyPlanRows(){
- const rows=[];
- WEEK_DAYS.forEach((day,dayIndex)=>{
-   MEAL_CONFIG.forEach((config,mealIndex)=>{
-     const {recipe,preference}=getWeeklyRecipeForSlot(config,mealIndex,dayIndex);
-     rows.push({
-       Dia:day.label,
-       Refeição:MEAL_TYPES[config.mealType],
-       Horário:config.time,
-       Preferência:preference||'',
-       Receita:recipe?recipe.title:'Sem opção',
-       Porção:recipe?recipe.servings:'',
-       Calorias:recipe?num(recipe.nutrition.calories):'',
-       Proteínas:recipe?recipe.nutrition.protein:'',
-       Carboidratos:recipe?recipe.nutrition.carbs:'',
-       Gorduras:recipe?recipe.nutrition.fat:''
-     });
-   });
- });
- return rows;
+function weeklySpreadsheetCell(recipe,preference){
+ if(!recipe)return 'Sem opção';
+ return [
+   `#${preference} — ${recipe.title}`,
+   `Porção: ${recipe.servings}`,
+   `Calorias: ${recipe.nutrition.calories} kcal`,
+   `Proteínas: ${recipe.nutrition.protein}`,
+   `Carboidratos: ${recipe.nutrition.carbs}`,
+   `Gorduras: ${recipe.nutrition.fat}`
+ ].join('\n');
 }
-function getWeeklyRankingRows(){
- const rows=[];
- MEAL_CONFIG.forEach(config=>{
-   const prefs=weeklyPreferences.get(config.mealType)||[];
-   prefs.forEach((id,index)=>{
-     const recipe=RECIPE_DATABASE.find(r=>r.id===id);
-     if(recipe)rows.push({
-       Refeição:MEAL_TYPES[config.mealType],
-       Posição:index+1,
-       Receita:recipe.title,
-       Calorias:num(recipe.nutrition.calories),
-       Proteínas:recipe.nutrition.protein
-     });
+function getWeeklyPlanMatrix(){
+ const matrix=[['Refeição',...WEEK_DAYS.map(day=>day.label)]];
+ MEAL_CONFIG.forEach((config,mealIndex)=>{
+   const row=[`${MEAL_TYPES[config.mealType]}\n${config.time}`];
+   WEEK_DAYS.forEach((day,dayIndex)=>{
+     const {recipe,preference}=getWeeklyRecipeForSlot(config,mealIndex,dayIndex);
+     row.push(weeklySpreadsheetCell(recipe,preference));
    });
+   matrix.push(row);
  });
- return rows;
+ return matrix;
+}
+function getWeeklyRankingMatrix(){
+ const header=['Preferência',...MEAL_CONFIG.map(config=>MEAL_TYPES[config.mealType])];
+ const matrix=[header];
+ for(let rank=0;rank<7;rank++){
+   const row=[`${rank+1}º`];
+   MEAL_CONFIG.forEach(config=>{
+     const prefs=weeklyPreferences.get(config.mealType)||[];
+     const recipe=RECIPE_DATABASE.find(r=>r.id===prefs[rank]);
+     row.push(recipe?recipe.title:'');
+   });
+   matrix.push(row);
+ }
+ return matrix;
+}
+function styleWeeklySheet(ws,rowCount,colCount){
+ ws['!cols']=[{wch:23},...Array.from({length:colCount-1},()=>({wch:34}))];
+ ws['!rows']=[{hpt:28},...Array.from({length:rowCount-1},()=>({hpt:104}))];
+ for(let r=0;r<rowCount;r++){
+   for(let c=0;c<colCount;c++){
+     const ref=XLSX.utils.encode_cell({r,c});
+     const cell=ws[ref];
+     if(!cell)continue;
+     cell.s={
+       alignment:{wrapText:true,vertical:'top',horizontal:r===0?'center':'left'},
+       font:{bold:r===0||c===0,color:{rgb:r===0?'FFFFFF':c===0?'244F60':'24323D'}},
+       fill:{fgColor:{rgb:r===0?'315D6D':c===0?'EAF1F3':'FFFFFF'}},
+       border:{
+         top:{style:'thin',color:{rgb:'B8C8CE'}},
+         bottom:{style:'thin',color:{rgb:'B8C8CE'}},
+         left:{style:'thin',color:{rgb:'B8C8CE'}},
+         right:{style:'thin',color:{rgb:'B8C8CE'}}
+       }
+     };
+   }
+ }
+}
+function styleRankingSheet(ws,rowCount,colCount){
+ ws['!cols']=[{wch:12},...Array.from({length:colCount-1},()=>({wch:38}))];
+ ws['!rows']=[{hpt:26},...Array.from({length:rowCount-1},()=>({hpt:34}))];
+ for(let r=0;r<rowCount;r++){
+   for(let c=0;c<colCount;c++){
+     const ref=XLSX.utils.encode_cell({r,c});
+     const cell=ws[ref];
+     if(!cell)continue;
+     cell.s={
+       alignment:{wrapText:true,vertical:'top',horizontal:r===0?'center':'left'},
+       font:{bold:r===0||c===0,color:{rgb:r===0?'FFFFFF':c===0?'4F7A68':'24323D'}},
+       fill:{fgColor:{rgb:r===0?'4F7A68':c===0?'EEF4F1':'FFFFFF'}},
+       border:{
+         top:{style:'thin',color:{rgb:'B8C8CE'}},
+         bottom:{style:'thin',color:{rgb:'B8C8CE'}},
+         left:{style:'thin',color:{rgb:'B8C8CE'}},
+         right:{style:'thin',color:{rgb:'B8C8CE'}}
+       }
+     };
+   }
+ }
 }
 function weeklyExportFileName(extension){
  const p=getProfileMetrics();
@@ -242,12 +285,13 @@ function weeklyExportFileName(extension){
 function buildWeeklyWorkbook(){
  if(typeof XLSX==='undefined')return null;
  const wb=XLSX.utils.book_new();
- const planRows=getWeeklyPlanRows();
- const rankingRows=getWeeklyRankingRows();
- const wsPlan=XLSX.utils.json_to_sheet(planRows);
- const wsRanking=XLSX.utils.json_to_sheet(rankingRows);
- wsPlan['!cols']=[{wch:11},{wch:23},{wch:9},{wch:11},{wch:42},{wch:16},{wch:10},{wch:12},{wch:14},{wch:11}];
- wsRanking['!cols']=[{wch:23},{wch:9},{wch:44},{wch:10},{wch:12}];
+ const planMatrix=getWeeklyPlanMatrix();
+ const rankingMatrix=getWeeklyRankingMatrix();
+ const wsPlan=XLSX.utils.aoa_to_sheet(planMatrix);
+ const wsRanking=XLSX.utils.aoa_to_sheet(rankingMatrix);
+ styleWeeklySheet(wsPlan,planMatrix.length,planMatrix[0].length);
+ styleRankingSheet(wsRanking,rankingMatrix.length,rankingMatrix[0].length);
+ wsPlan['!autofilter']={ref:`A1:H${planMatrix.length}`};
  XLSX.utils.book_append_sheet(wb,wsPlan,'Planejamento Semanal');
  XLSX.utils.book_append_sheet(wb,wsRanking,'Ranking');
  return wb;
@@ -259,7 +303,7 @@ function exportWeeklySpreadsheet(format){
    return;
  }
  const type=format==='ods'?'ods':'xlsx';
- XLSX.writeFile(wb,weeklyExportFileName(type),{bookType:type,compression:true});
+ XLSX.writeFile(wb,weeklyExportFileName(type),{bookType:type,compression:true,cellStyles:true});
 }
 function buildWeeklyPrintReport(){
  const host=document.getElementById('weekly-print-report');
