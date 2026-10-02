@@ -1,5 +1,9 @@
 # DietCalc - Plano Alimentar para Iniciantes na Musculação 🏋️‍♂️🥗
 
+*Read this in other languages: [English](README-en.md)*
+
+---
+
 WebApp responsivo e **100% offline** para estimar necessidades energéticas, montar um plano alimentar de cinco refeições e explorar um banco local de **200 receitas**.
 
 ## 🌐 Demonstração Online
