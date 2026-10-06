@@ -44,3 +44,13 @@ As **quantidades das receitas originais são preservadas**. O aplicativo não re
 ## ⚠️ Aviso médico e nutricional
 
 O aplicativo utiliza fórmulas e multiplicadores gerais e não substitui consulta com nutricionista ou médico. Pessoas com condições de saúde, necessidades dietéticas específicas, alergias ou uso de medicamentos devem procurar acompanhamento profissional individualizado.
+
+---
+
+## 👤 Autoria e desenvolvimento
+
+O DietCalc é uma aplicação web responsiva desenvolvida de forma independente por Pablo Phillipe Cândido dos Santos, destinada a estimar necessidades energéticas e organizar planos alimentares de cinco refeições para iniciantes na musculação. O projeto calcula a taxa metabólica basal e a manutenção estimada, sugere receitas de um banco local conforme os ingredientes disponíveis e oferece planejamento semanal com exportação de relatórios.
+
+O desenvolvimento contou com a utilização de ferramentas de inteligência artificial generativa como recurso auxiliar no processo de desenvolvimento, mantendo-se sob responsabilidade do autor a concepção, implementação, integração e verificação do projeto.
+
+Currículo Lattes: [http://lattes.cnpq.br/9500873674712528](http://lattes.cnpq.br/9500873674712528)
