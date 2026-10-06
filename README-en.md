@@ -44,3 +44,13 @@ The **original recipe quantities are preserved**. The application does not autom
 ## ⚠️ Medical and nutritional disclaimer
 
 The application uses general formulas and multipliers and does not replace consultation with a dietitian/nutrition professional or physician. People with health conditions, specific dietary needs, allergies, or medication use should seek individualized professional guidance.
+
+---
+
+## 👤 Authorship and development
+
+DietCalc is a responsive web application independently developed by Pablo Phillipe Cândido dos Santos, intended to estimate energy needs and organize five-meal plans for beginners in strength training. The project calculates basal metabolic rate and estimated maintenance needs, suggests recipes from a local database according to available ingredients, and provides weekly planning with report export.
+
+Generative artificial intelligence tools were used as auxiliary resources during development, while responsibility for the project's conception, implementation, integration, and verification remained with the author.
+
+Lattes CV: [http://lattes.cnpq.br/9500873674712528](http://lattes.cnpq.br/9500873674712528)
